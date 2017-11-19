@@ -25,7 +25,7 @@ References
 
 ---
 
-## <a name="batchnorm"></a>Batch Normization
+## <a name="batchnorm"></a>Batch Normalization
 
 * torch.nn.BatchNorm2d in PyTorch
 * normalizses the data in each batch to have zero mean and unit covariance
