@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Small mini blog sized notes, or note sized blogs.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notes</title>
+  <link rel="stylesheet" href="css/main.css">
+
+</head>
+<body>
+  <div class="container">
+    <h1><a href="./">Notes</a></h1>
+    <p><a href="#deconv">Deconvolution Layer</a><br />
+<a href="#batchnorm">Batch Normalization</a></p>
+
+<hr />
+
+<h2 id="deconvolution-layer"><a name="deconv"></a>Deconvolution Layer</h2>
+
+<ul>
+  <li>torch.nn.ConvTranspose2d in PyTorch</li>
+  <li>ambiguous name, no deconvolutions</li>
+  <li>a deconvolution layer maps from a lower to higher dimension, a sort of upsampling</li>
+  <li>the transpose of a non-padded convolution is equivalent to convolving a zero-padded input</li>
+  <li>zeroes are inserted between inputs which cause the kernel to move slower, hence also called fractionally strided convolution</li>
+  <li>deconv layers allow the model to use every point in the small image to “paint” a square in the larger one</li>
+  <li>deconv layers have uneven overlap in the output, conv layers have overlap in the input</li>
+  <li>leads to the problem of checkerboard artifacts</li>
+</ul>
+
+<p>References</p>
+<ul>
+  <li><a href="http://deeplearning.net/software/theano_versions/dev/tutorial/conv_arithmetic.html" target="_blank">Convolution Arithmatic</a></li>
+  <li><a href="https://distill.pub/2016/deconv-checkerboard/" target="_blank">Distil Blog Post</a></li>
+  <li><a href="http://www.matthewzeiler.com/wp-content/uploads/2017/07/cvpr2010.pdf" target="_blank">Original Paper</a></li>
+</ul>
+
+<hr />
+
+<h2 id="batch-normization"><a name="batchnorm"></a>Batch Normization</h2>
+
+<ul>
+  <li>torch.nn.BatchNorm2d in PyTorch</li>
+  <li>normalizses the data in each batch to have zero mean and unit covariance</li>
+  <li>provides some consistency between layers by reducing internal covariate shift</li>
+  <li>allows a higher learning rate to be used, reduces the learning time</li>
+  <li>after normalizing the input, it is squased through a linear function with parameters gamma and beta</li>
+  <li>output of batchnorm = gamma * normalized_input + beta</li>
+  <li>having gamma and beta allows the network to choose how much ‘normalization’ it wants for every feature; shift and scale</li>
+</ul>
+
+<p>References</p>
+<ul>
+  <li><a href="https://www.youtube.com/watch?v=gYpoJMlgyXA&amp;feature=youtu.be&amp;list=PLkt2uSq6rBVctENoVBg1TpCC7OQi31AlC&amp;t=3078" target="_blank">Andrej Karapathy’s lecture</a></li>
+  <li><a href="https://arxiv.org/abs/1502.03167" target="_blank">Original Paper</a></li>
+  <li><a href="https://kratzert.github.io/2016/02/12/understanding-the-gradient-flow-through-the-batch-normalization-layer.html">Reac this later</a></li>
+</ul>
+
+<hr />
+
+  </div>
+
+</body>
+</html>
