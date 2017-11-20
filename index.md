@@ -17,6 +17,7 @@ layout: default
 * deconv layers allow the model to use every point in the small image to “paint” a square in the larger one
 * deconv layers have uneven overlap in the output, conv layers have overlap in the input
 * leads to the problem of checkerboard artifacts
+* resize-convolution instead transposed-convolution to avoid checkerboard artifacts
 
 References
 * [Convolution Arithmatic](http://deeplearning.net/software/theano_versions/dev/tutorial/conv_arithmetic.html){:target="_blank"}
