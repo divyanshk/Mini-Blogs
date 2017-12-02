@@ -3,7 +3,8 @@ layout: default
 ---
 
 [Deconvolution Layer](#deconv)  
-[Batch Normalization](#batchnorm)
+[Batch Normalization](#batchnorm)  
+[SqueezeNet ](#squeezenet)  
 
 ---
 
@@ -39,6 +40,22 @@ References
 References
 * [Andrej Karapathy's lecture](https://www.youtube.com/watch?v=gYpoJMlgyXA&feature=youtu.be&list=PLkt2uSq6rBVctENoVBg1TpCC7OQi31AlC&t=3078){:target="_blank"}
 * [Original Paper](https://arxiv.org/abs/1502.03167){:target="_blank"}
-* [Read this later](https://kratzert.github.io/2016/02/12/understanding-the-gradient-flow-through-the-batch-normalization-layer.html)
+* [Read this later](https://kratzert.github.io/2016/02/12/understanding-the-gradient-flow-through-the-batch-normalization-layer.html){:target="_blank"}
+
+---
+
+## <a name="squeezenet"></a>SqueezeNet
+
+* A conv net aimed at drastically reducing the number of parameter without much loss to accuracy
+* Uses 1x1 filters instead of 3x3
+* 1x1 filters work by capturing information on the channels of the pixels as compared to the neighborhood
+* Uses a 'fire' module, composed of 'squeeze' and 'expand' layers
+* The number of filters in the squeeze layer is restricted, thereby reducing the input channels to the expand layer
+* Downsampling late into the network to have larger activation maps
+* No fc layers
+
+References
+* [Original paper](https://arxiv.org/pdf/1602.07360.pdf){:target="_blank"}
+* [KDNuggest summary](https://www.kdnuggets.com/2016/09/deep-learning-reading-group-squeezenet.html){:target="_blank"}
 
 ---
