@@ -4,7 +4,8 @@ layout: default
 
 [Deconvolution Layer](#deconv)  
 [Batch Normalization](#batchnorm)  
-[SqueezeNet ](#squeezenet)  
+[SqueezeNet](#squeezenet)  
+[Q-learning v SARSA](#qlearningsarsa)
 
 ---
 
@@ -57,5 +58,19 @@ References
 References
 * [Original paper](https://arxiv.org/pdf/1602.07360.pdf){:target="_blank"}
 * [KDNuggest summary](https://www.kdnuggets.com/2016/09/deep-learning-reading-group-squeezenet.html){:target="_blank"}
+
+---
+
+## <a name='qlearningsarsa'></a>Q-learning v SARSA
+
+* SARSA stands for state-action-reward-state-action
+* SARSA is on-policy; that is sticks to the policy it is learning. Q-learning is off-policy
+* SARSA improves the estimate of Q by using the transitions from the policy dervied from Q 
+* Q-learning updates the Q estimate using the observed reward and the maximum reward possible $$ max_{a\prime} Q(s\prime, a\prime) $$ for the next state
+
+
+References
+* [Pseudo Codes](http://www.cse.unsw.edu.au/~cs9417ml/RL1/algorithms.html)
+* [StackOverFlow](https://stackoverflow.com/questions/32846262/q-learning-vs-sarsa-with-greedy-select)
 
 ---
