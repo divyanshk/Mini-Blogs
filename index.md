@@ -6,6 +6,7 @@ layout: default
 [Batch Normalization](#batchnorm)  
 [SqueezeNet](#squeezenet)  
 [Q-learning v SARSA](#qlearningsarsa)
+[Policy Iteration v Value Iteration](#policyvalue)
 
 ---
 
@@ -23,8 +24,8 @@ layout: default
 
 References
 * [Convolution Arithmatic](http://deeplearning.net/software/theano_versions/dev/tutorial/conv_arithmetic.html){:target="_blank"}
-* [Distil Blog Post](https://distill.pub/2016/deconv-checkerboard/){:target="_blank"}
-* [Original Paper](http://www.matthewzeiler.com/wp-content/uploads/2017/07/cvpr2010.pdf){:target="_blank"}
+* [Distil Blog Post](https://distill.pub/2016/deconv-checkerboard/)
+* [Original Paper](http://www.matthewzeiler.com/wp-content/uploads/2017/07/cvpr2010.pdf)
 
 ---
 
@@ -39,9 +40,9 @@ References
 * having gamma and beta allows the network to choose how much 'normalization' it wants for every feature; shift and scale
 
 References
-* [Andrej Karapathy's lecture](https://www.youtube.com/watch?v=gYpoJMlgyXA&feature=youtu.be&list=PLkt2uSq6rBVctENoVBg1TpCC7OQi31AlC&t=3078){:target="_blank"}
-* [Original Paper](https://arxiv.org/abs/1502.03167){:target="_blank"}
-* [Read this later](https://kratzert.github.io/2016/02/12/understanding-the-gradient-flow-through-the-batch-normalization-layer.html){:target="_blank"}
+* [Andrej Karapathy's lecture](https://www.youtube.com/watch?v=gYpoJMlgyXA&feature=youtu.be&list=PLkt2uSq6rBVctENoVBg1TpCC7OQi31AlC&t=3078)
+* [Original Paper](https://arxiv.org/abs/1502.03167)
+* [Read this later](https://kratzert.github.io/2016/02/12/understanding-the-gradient-flow-through-the-batch-normalization-layer.html)
 
 ---
 
@@ -56,8 +57,8 @@ References
 * No fc layers
 
 References
-* [Original paper](https://arxiv.org/pdf/1602.07360.pdf){:target="_blank"}
-* [KDNuggest summary](https://www.kdnuggets.com/2016/09/deep-learning-reading-group-squeezenet.html){:target="_blank"}
+* [Original paper](https://arxiv.org/pdf/1602.07360.pdf)
+* [KDNuggest summary](https://www.kdnuggets.com/2016/09/deep-learning-reading-group-squeezenet.html)
 
 ---
 
@@ -66,7 +67,7 @@ References
 * SARSA stands for state-action-reward-state-action
 * SARSA is on-policy; that is sticks to the policy it is learning. Q-learning is off-policy
 * SARSA improves the estimate of Q by using the transitions from the policy dervied from Q 
-* Q-learning updates the Q estimate using the observed reward and the maximum reward possible $$ max_{a\prime} Q(s\prime, a\prime) $$ for the next state
+* Q-learning updates the Q estimate using the observed reward and the maximum reward possible $$ max_a{a\prime} Q(s\prime, a\prime) $$ for the next state
 
 
 References
@@ -74,3 +75,16 @@ References
 * [StackOverFlow](https://stackoverflow.com/questions/32846262/q-learning-vs-sarsa-with-greedy-select)
 
 ---
+
+## <a name='policyvalue'></a>Policy Iteration v Value Iteration
+
+* PI: trying to converge the policy to optimal; VI: trying to converge the value function to optimal
+* PI: policy evaluation (calculating value function using $$ v(s) \gets \sum_{s\prime} p(s\prime \mid s, \pi (s)) [r(s, \pi (s), s\prime) + \gamma v(s\prime)] $$) ) + policy improvement; repeat until policy is stable
+* VI: policy evaluation (calculating value function using $$ v(s) \gets max_a \sum_{s\prime} p(s\prime \mid s,a) [r(s,a,s\prime) + \gamma v(s\prime)] $$); single policy update
+
+References
+* [StackOverFlow](https://stackoverflow.com/questions/37370015/what-is-the-difference-between-value-iteration-and-policy-iteration)
+
+---
+
+
