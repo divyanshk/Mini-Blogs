@@ -5,8 +5,9 @@ layout: default
 [Deconvolution Layer](#deconv)  
 [Batch Normalization](#batchnorm)  
 [SqueezeNet](#squeezenet)  
-[Q-learning v SARSA](#qlearningsarsa)
-[Policy Iteration v Value Iteration](#policyvalue)
+[Q-learning v SARSA](#qlearningsarsa)  
+[Policy Iteration v Value Iteration](#policyvalue)  
+[Policy Gradients](#policygrad)
 
 ---
 
@@ -87,4 +88,21 @@ References
 
 ---
 
+## <a name='policygrad'></a>Policy Gradients
+
+* Run a policy for a while; see what actions led to higher rewards; increase their probability
+* Take the gradient of log probability of trajectory, then weight it by the final reward
+* Increase the probability of actions that lead to higher reward
+* With $$ J(\theta) $$ as the policy objective function	
+$$ \nabla_{\theta} J(\theta) = \sum_{t \geq 0} r(\tau) \;\nabla_{\theta} \;log\; \pi_{\theta} (a_t \mid s_t) $$
+* This suffers from high variance and is a simplistic view; credit assignment problem is hard 
+* Baseline: whether a reward is better or worse than what you expect to get
+* A simple baseline: constant moving average of rewards experienced so far from all trajectories; Vanilla REINFORCE
+* Reducing variance further using better baselines -> Actor critic algorithm
+
+References
+* [CS231n RL Lecture](http://cs231n.stanford.edu/slides/2017/cs231n_2017_lecture14.pdf)
+* [David Silver slides](http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching_files/pg.pdf)
+
+---
 
