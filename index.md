@@ -7,7 +7,8 @@ layout: default
 [SqueezeNet](#squeezenet)  
 [Q-learning v SARSA](#qlearningsarsa)  
 [Policy Iteration v Value Iteration](#policyvalue)  
-[Policy Gradients](#policygrad)
+[Policy Gradients](#policygrad)  
+[Actor Critic methods](#actorcritic)
 
 ---
 
@@ -106,3 +107,16 @@ References
 
 ---
 
+## <a name='actorcritic'></a>Actor Critic Methods
+
+* Works well when there is an infinite input and output space
+* Requires much less training time than policy gradient methods
+* Actor => takes in the environment states and determines the best action to take
+* Critic => takes in the environment and the action from the actor and returns a score that represents how good the action is for the state
+* Both the actor (policy) and critic (Q function) are different neural networks
+
+References
+* [CS231n RL Lecture](http://cs231n.stanford.edu/slides/2017/cs231n_2017_lecture14.pdf)
+* [CS294 DeepRL](http://rll.berkeley.edu/deeprlcourse/f17docs/lecture_5_actor_critic_pdf.pdf)
+
+---
