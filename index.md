@@ -6,7 +6,8 @@ layout: default
 [Batch Normalization](#batchnorm)  
 [SqueezeNet](#squeezenet)  
 [Q-learning v SARSA](#qlearningsarsa)  
-[Policy Iteration v Value Iteration](#policyvalue)  
+[Policy Iteration v Value Iteration](#policyvalue) 
+[Q Learning](#qlearning) 
 [Policy Gradients](#policygrad)  
 [Actor Critic methods](#actorcritic)
 
@@ -89,6 +90,19 @@ References
 
 ---
 
+## <a name='qlearning'></a>Q Learning
+
+* Model free learning: the agent has no idea about the state transition and reward functions; it learns everything from experience by interacting with the environment
+* Q-Learning is based on Time-Difference Learning
+* $$ Q(s_t, a_t) = Q(s_t, a_t) + \alpha[r(s,a) + \gamma * max_a Q(s_{t+1}, a) - Q(s_t, a_t)] $$
+* See notes on Q-Learning v SARSA
+* $$ \epsilon $$-greedy approach: choose a random action with probability $$ \epsilon $$, or action according to the current estimate of Q-values otherwise; this approach controls the exploration vs exploitation
+
+References
+* Sutton Book 1st Ed Page 148
+* [Medium post](https://medium.com/@m.alzantot/deep-reinforcement-learning-demysitifed-episode-2-policy-iteration-value-iteration-and-q-978f9e89ddaa)
+
+---
 ## <a name='policygrad'></a>Policy Gradients
 
 * Run a policy for a while; see what actions led to higher rewards; increase their probability
