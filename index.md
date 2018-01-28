@@ -6,8 +6,8 @@ layout: default
 [Batch Normalization](#batchnorm)  
 [SqueezeNet](#squeezenet)  
 [Q-learning v SARSA](#qlearningsarsa)  
-[Policy Iteration v Value Iteration](#policyvalue) 
-[Q Learning](#qlearning) 
+[Policy Iteration v Value Iteration](#policyvalue)   
+[Q Learning](#qlearning)  
 [Policy Gradients](#policygrad)  
 [Actor Critic methods](#actorcritic)
 
