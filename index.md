@@ -10,6 +10,7 @@ layout: default
 [Q Learning](#qlearning)  
 [Policy Gradients](#policygrad)  
 [Actor Critic methods](#actorcritic)
+[Trust Region Methods](#trpo)
 
 ---
 
@@ -132,5 +133,18 @@ References
 References
 * [CS231n RL Lecture](http://cs231n.stanford.edu/slides/2017/cs231n_2017_lecture14.pdf)
 * [CS294 DeepRL](http://rll.berkeley.edu/deeprlcourse/f17docs/lecture_5_actor_critic_pdf.pdf)
+
+---
+
+## <a name='trpo'></a>Trust Region Methods
+
+* A kind of local policy search algorithm
+* 'local' because every new policy is somewhat closer to the earlier policy
+* TRPO uses policy gradients but has a constraint on how the polices are updated
+* Each new policy has to be close to the older one in terms of the KL-divergence
+* Since polices are nothing but probability distributions over the actions, KL divergence is a natural way to measure the distance
+
+References
+* [TRPO paper](https://arxiv.org/abs/1502.05477)
 
 ---
