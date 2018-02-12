@@ -9,8 +9,9 @@ layout: default
 [Policy Iteration v Value Iteration](#policyvalue)   
 [Q Learning](#qlearning)  
 [Policy Gradients](#policygrad)  
-[Actor Critic methods](#actorcritic)
-[Trust Region Methods](#trpo)
+[Actor Critic methods](#actorcritic)  
+[Trust Region Methods](#trpo)  
+[Monte Carlo Tree Search](#mcts)  
 
 ---
 
@@ -143,8 +144,30 @@ References
 * TRPO uses policy gradients but has a constraint on how the polices are updated
 * Each new policy has to be close to the older one in terms of the KL-divergence
 * Since polices are nothing but probability distributions over the actions, KL divergence is a natural way to measure the distance
+* Constraint Policy Optimization (CPO) is another trust region method using contraints on the cost function to keep an agent's action under a limit while maintaining optimal performance
 
 References
 * [TRPO paper](https://arxiv.org/abs/1502.05477)
+* [OpenAI Blog on CPO](http://bair.berkeley.edu/blog/2017/07/06/cpo/)
+
+---
+
+## <a name='mcts'></a>Monte Carlo Tree Search
+
+* MCTS is based on two idea:
+    * a true value of an action may be evaluated using random simulation
+    * these values maybe used to efficiently adjust the policy towards a best-first strategy
+* THe algorithm builds a search tree till a computational budget - time or memory is exhausted
+* The algorthim has four parts which are applied per iteration
+    * Selection: descending down the root node till an expandable non-terminal node 
+    * Expansion: adding child nodes to the tree
+    * Simulation: simulate the default policy from the new node(s) to produce an output
+    * Backpropagation: the simulation result is 'backed up' through the selected nodes
+* Selection + Expansion => Tree policy; Simluation => Default policy
+* The backpropagatin step informs future tree policy decision
+
+References
+* [MCTS Survey paper](https://gnunet.org/sites/default/files/Browne%20et%20al%20-%20A%20survey%20of%20MCTS%20methods.pdf)
+* Sutton 2nd Edition 8.11 Page 153
 
 ---
