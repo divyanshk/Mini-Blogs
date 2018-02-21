@@ -12,6 +12,7 @@ layout: default
 [Actor Critic methods](#actorcritic)  
 [Trust Region Methods](#trpo)  
 [Monte Carlo Tree Search](#mcts)  
+[Inverse Reinforcement Learning](#irl)  
 
 ---
 
@@ -160,7 +161,7 @@ References
 * THe algorithm builds a search tree till a computational budget - time or memory is exhausted
 * The algorthim has four parts which are applied per iteration
     * Selection: descending down the root node till an expandable non-terminal node 
-    * Expansion: adding child nodes to the tree
+    * Expansion: adding child nodes towards the tree
     * Simulation: simulate the default policy from the new node(s) to produce an output
     * Backpropagation: the simulation result is 'backed up' through the selected nodes
 * Selection + Expansion => Tree policy; Simluation => Default policy
@@ -169,5 +170,20 @@ References
 References
 * [MCTS Survey paper](https://gnunet.org/sites/default/files/Browne%20et%20al%20-%20A%20survey%20of%20MCTS%20methods.pdf)
 * Sutton 2nd Edition 8.11 Page 153
+
+---
+
+## <a name='irl'></a>Inverse Reinforcement Learning
+
+* Learning the reward fucntion by observing expert behaviour
+* Imitation learning or behaviour cloning tries to copy the teacher's actions
+* Learning the reward function can make the system robust to changes in the environment's transition mechanics
+* Learning the reward function is also transferable from one type of agent to another, as it encodes all that is needed to excel in the envirnment
+* Think of IRL as a way to learn an abstraction or latent representation of the target
+* Another big motivation for IRL is that it is extremely difficult to manually specifiy a reward function to an agent, like in a self driving car
+* Instead of simply copying the expert behavior, we can then try to learn the underlying reward function which the expert is trying to optimize
+
+References
+* [Blog post](https://thinkingwires.com/posts/2018-02-13-irl-tutorial-1.html)
 
 ---
