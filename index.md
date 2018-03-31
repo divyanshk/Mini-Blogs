@@ -4,7 +4,6 @@ layout: default
 
 [Deconvolution Layer](#deconv)  
 [Batch Normalization](#batchnorm)  
-[SqueezeNet](#squeezenet)  
 [Q-learning v SARSA](#qlearningsarsa)  
 [Policy Iteration v Value Iteration](#policyvalue)   
 [Q Learning](#qlearning)  
@@ -12,7 +11,7 @@ layout: default
 [Actor Critic methods](#actorcritic)  
 [Trust Region Methods](#trpo)  
 [Monte Carlo Tree Search](#mcts)  
-[Inverse Reinforcement Learning](#irl)  
+[Inverse Reinforcement Learning](#irl)      
 
 ---
 
@@ -49,22 +48,6 @@ References
 * [Andrej Karapathy's lecture](https://www.youtube.com/watch?v=gYpoJMlgyXA&feature=youtu.be&list=PLkt2uSq6rBVctENoVBg1TpCC7OQi31AlC&t=3078)
 * [Original Paper](https://arxiv.org/abs/1502.03167)
 * [Read this later](https://kratzert.github.io/2016/02/12/understanding-the-gradient-flow-through-the-batch-normalization-layer.html)
-
----
-
-## <a name="squeezenet"></a>SqueezeNet
-
-* A conv net aimed at drastically reducing the number of parameter without much loss to accuracy
-* Uses 1x1 filters instead of 3x3
-* 1x1 filters work by capturing information on the channels of the pixels as compared to the neighborhood
-* Uses a 'fire' module, composed of 'squeeze' and 'expand' layers
-* The number of filters in the squeeze layer is restricted, thereby reducing the input channels to the expand layer
-* Downsampling late into the network to have larger activation maps
-* No fc layers
-
-References
-* [Original paper](https://arxiv.org/pdf/1602.07360.pdf)
-* [KDNuggest summary](https://www.kdnuggets.com/2016/09/deep-learning-reading-group-squeezenet.html)
 
 ---
 
@@ -176,7 +159,7 @@ References
 ## <a name='irl'></a>Inverse Reinforcement Learning
 
 * Learning the reward fucntion by observing expert behaviour
-* Imitation learning or behaviour cloning tries to copy the teacher's actions
+* Imitation learning (behaviour cloning and IRL) tries to copy the teacher's actions
 * Learning the reward function can make the system robust to changes in the environment's transition mechanics
 * Learning the reward function is also transferable from one type of agent to another, as it encodes all that is needed to excel in the envirnment
 * Think of IRL as a way to learn an abstraction or latent representation of the target
@@ -187,3 +170,16 @@ References
 * [Blog post](https://thinkingwires.com/posts/2018-02-13-irl-tutorial-1.html)
 
 ---
+
+## <a name='oneshot'</a>One/Few Shot Imitation Learning
+
+* Trying to learn with very limited demonstrations
+* The model is given multiple demonstrations and conditioned on one instance of a task, to help learn that task, and so on similarly other tasks as well
+* Generalise the understanding of various tasks
+
+References
+* [Paper](https://arxiv.org/pdf/1703.07326.pdf)
+
+---
+
+
