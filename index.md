@@ -182,4 +182,17 @@ References
 
 ---
 
+## <a name='meta'></a>Neta Learning
+
+* The agent learns a policy to learn policies
+* Given a task and an model, the agent can learn a policy to master that task
+* But it may fail if the task is altered
+* Meta Learning tries to devise methods to learn policies which can learn policies further and can therefore perform multiple tasks
+
+References
+* [Learning to reinforcement learn](https://arxiv.org/abs/1611.05763)
+* [RL^2](https://arxiv.org/abs/1611.02779)
+
+--
+
 
