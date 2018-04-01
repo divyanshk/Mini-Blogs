@@ -11,7 +11,9 @@ layout: default
 [Actor Critic methods](#actorcritic)  
 [Trust Region Methods](#trpo)  
 [Monte Carlo Tree Search](#mcts)  
-[Inverse Reinforcement Learning](#irl)      
+[Inverse Reinforcement Learning](#irl)  
+[One shot learning](#oneshot)  
+[Meta learning](#meta)       
 
 ---
 
@@ -171,7 +173,7 @@ References
 
 ---
 
-## <a name='oneshot'</a>One/Few Shot Imitation Learning
+## <a name='oneshot'></a>One Shot Imitation Learning
 
 * Trying to learn with very limited demonstrations
 * The model is given multiple demonstrations and conditioned on one instance of a task, to help learn that task, and so on similarly other tasks as well
@@ -182,7 +184,7 @@ References
 
 ---
 
-## <a name='meta'></a>Neta Learning
+## <a name='meta'></a>Meta Learning
 
 * The agent learns a policy to learn policies
 * Given a task and an model, the agent can learn a policy to master that task
@@ -193,6 +195,6 @@ References
 * [Learning to reinforcement learn](https://arxiv.org/abs/1611.05763)
 * [RL^2](https://arxiv.org/abs/1611.02779)
 
---
+---
 
 
