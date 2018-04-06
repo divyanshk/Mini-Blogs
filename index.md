@@ -13,7 +13,8 @@ layout: default
 [Monte Carlo Tree Search](#mcts)  
 [Inverse Reinforcement Learning](#irl)  
 [One shot learning](#oneshot)  
-[Meta learning](#meta)       
+[Meta learning](#meta)  
+[A3C](#a3c) 
 
 ---
 
@@ -197,4 +198,16 @@ References
 
 ---
 
+## <a name='a3c'></a>Asynchronous Actor-Critic Agents (A3C)
+
+* Asychronous Advantage Actor-Critic 
+* Asychronous: Unlike other learning agent algos like DQN, A3C has multiple worker agents interacting with the environment providing a more diverse experience to the learning phase
+* Advantage: like in PG methods
+* Actor-Critic: same as [Actor Critic](#actorcritic)
+* The workers independently work by learning from the environment and update the global network
+
+References
+* [Paper](https://arxiv.org/pdf/1602.01783.pdf)
+
+---
 
