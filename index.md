@@ -14,7 +14,8 @@ layout: default
 [Inverse Reinforcement Learning](#irl)  
 [One shot learning](#oneshot)  
 [Meta learning](#meta)  
-[A3C](#a3c) 
+[A3C](#a3c)  
+[Distributed DL](#ddl)   
 
 ---
 
@@ -211,3 +212,21 @@ References
 
 ---
 
+## <a name='ddl'></a>Distributed DL
+
+* **Synchronous Distributed SGD (Centralised)**
+    * Parameter Server
+    * Gradients are sent to the parameter server that computes the updates
+    * Workers reeive updated models  
+* **Synchronous Distributed SGD (Decentralised)**
+    * All-Reduce the gradients to every worker
+    * Models on each node are updated with the same average gradients
+* **Asynchronous Distributed SGD (Centralised)**
+    * Asynchronous parameter udpates
+    * Lag problem
+    * Workers update when they complete their gradient calculation
+
+References
+* [Survey paper on Distributed DL](https://arxiv.org/pdf/1802.09941.pdf)
+
+---
