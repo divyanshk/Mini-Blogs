@@ -15,7 +15,7 @@ layout: default
 [One shot learning](#oneshot)  
 [Meta learning](#meta)  
 [A3C](#a3c)  
-[Distributed DL](#ddl)   
+[Distributed DL](#ddl)  
 
 ---
 
@@ -59,7 +59,7 @@ References
 
 * SARSA stands for state-action-reward-state-action
 * SARSA is on-policy; that is sticks to the policy it is learning. Q-learning is off-policy
-* SARSA improves the estimate of Q by using the transitions from the policy dervied from Q 
+* SARSA improves the estimate of Q by using the transitions from the policy dervied from Q
 * Q-learning updates the Q estimate using the observed reward and the maximum reward possible $$ max_a{a\prime} Q(s\prime, a\prime) $$ for the next state
 
 
@@ -98,9 +98,9 @@ References
 * Run a policy for a while; see what actions led to higher rewards; increase their probability
 * Take the gradient of log probability of trajectory, then weight it by the final reward
 * Increase the probability of actions that lead to higher reward
-* With $$ J(\theta) $$ as the policy objective function	
+* With $$ J(\theta) $$ as the policy objective function
 $$ \nabla_{\theta} J(\theta) = \sum_{t \geq 0} r(\tau) \;\nabla_{\theta} \;log\; \pi_{\theta} (a_t \mid s_t) $$
-* This suffers from high variance and is a simplistic view; credit assignment problem is hard 
+* This suffers from high variance and is a simplistic view; credit assignment problem is hard
 * Baseline: whether a reward is better or worse than what you expect to get
 * A simple baseline: constant moving average of rewards experienced so far from all trajectories; Vanilla REINFORCE
 * Reducing variance further using better baselines -> Actor critic algorithm
@@ -147,7 +147,7 @@ References
     * these values maybe used to efficiently adjust the policy towards a best-first strategy
 * THe algorithm builds a search tree till a computational budget - time or memory is exhausted
 * The algorthim has four parts which are applied per iteration
-    * Selection: descending down the root node till an expandable non-terminal node 
+    * Selection: descending down the root node till an expandable non-terminal node
     * Expansion: adding child nodes towards the tree
     * Simulation: simulate the default policy from the new node(s) to produce an output
     * Backpropagation: the simulation result is 'backed up' through the selected nodes
@@ -201,7 +201,7 @@ References
 
 ## <a name='a3c'></a>Asynchronous Actor-Critic Agents (A3C)
 
-* Asychronous Advantage Actor-Critic 
+* Asychronous Advantage Actor-Critic
 * Asychronous: Unlike other learning agent algos like DQN, A3C has multiple worker agents interacting with the environment providing a more diverse experience to the learning phase
 * Advantage: like in PG methods
 * Actor-Critic: same as [Actor Critic](#actorcritic)
