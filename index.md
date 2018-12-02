@@ -16,6 +16,7 @@ layout: default
 [Meta learning](#meta)  
 [A3C](#a3c)  
 [Distributed DL](#ddl)  
+[MAC vs Digital Signatures](#mac)  
 
 ---
 
@@ -228,5 +229,21 @@ References
 
 References
 * [Survey paper on Distributed DL](https://arxiv.org/pdf/1802.09941.pdf)
+
+---
+
+## <a name='mac'></a>MAC vs Digital Signatures
+
+* Message Authentication Codes (MAC): detects modification of messages based on a 'shared key'
+    * Symmetric key based algorithms for pretecting integrity
+    * Example: HMAC (key-hashed MAC), CBC-MAC / CMAC (block cipher based)
+* Digital Signatures: detects modification of messages based on a asymmetric key pair
+    * Asymmetric keys: public key and private key
+    * The sender signs with its private key, the receiver can verify the signature with the sender's public key
+* MACs are faster and take less size; but Digital Signatures provide non-repudiation (if the recipient passes the message and the proof to a third party, can the third party be confident that the message originated from the sender ?)
+
+References
+* [Cornell Course page](http://www.cs.cornell.edu/courses/cs5430/2016sp/l/08-macdigsig/notes.html)
+* [Stackexchange](https://crypto.stackexchange.com/questions/6523/what-is-the-difference-between-mac-and-hmac)
 
 ---
