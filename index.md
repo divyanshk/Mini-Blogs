@@ -17,6 +17,7 @@ layout: default
 [A3C](#a3c)  
 [Distributed DL](#ddl)  
 [MAC vs Digital Signatures](#mac)  
+[MLE and KL Divergence](#mle)  
 
 ---
 
@@ -247,3 +248,30 @@ References
 * [Stackexchange](https://crypto.stackexchange.com/questions/6523/what-is-the-difference-between-mac-and-hmac)
 
 ---
+
+## <a name='mle'></a>MLE and KL Divergence
+
+* Maximum likelihood estimation (MLE):
+Given a dataset $$\mathcal{D}$$ of sie n drawn from a distribution $$ P_{\theta} \in \mathcal{P} $$, the MLE estimate of $$ \theta $$ is defined as 
+
+$$ \hat{\theta} = arg\;max_{\theta} \; \mathcal{L}(\theta, D)  $$ or 
+$$ \hat{\theta} = arg\;max_{\theta} \; log \; P_{\theta}(\mathcal{D}|\theta) $$
+* Equivalently, this can be formulated as iid samples, negative log-likelihood
+
+$$ NLL(\theta) = - \sum^N_{i=1} log \; p(y_i|x_i, \theta) $$
+* KL Divergence: 
+Relative entropy, it measures the dissimilarity of two probability distributions
+
+$$ \mathcal{KL} (p||q) = \sum^K_{k=1} \; p_k \; log \; \frac{p_k}{q_k} $$
+* Expand above to get $$ \mathcal{KL} = -\mathcal{H}(p) + \mathcal{H}(p,q) $$
+* In the limit, KL is same as MLE
+* In generative models, MLE isn't suitable as the probability density under the trained model for any actual input is almost always zero
+* For more details: [blog](https://www.inference.vc/how-to-train-your-generative-models-why-generative-adversarial-networks-work-so-well-2/)
+
+References
+* Murphy's book
+* [Blog](https://wiseodd.github.io/techblog/2017/01/26/kl-mle/)
+* [StackExchange](https://stats.stackexchange.com/a/345138)
+
+---
+
