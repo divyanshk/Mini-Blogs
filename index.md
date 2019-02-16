@@ -18,6 +18,7 @@ layout: default
 [Distributed DL](#ddl)  
 [MAC vs Digital Signatures](#mac)  
 [MLE and KL Divergence](#mle)  
+[Lipschitz Continuity](#lips)   
 
 ---
 
@@ -272,6 +273,22 @@ References
 * Murphy's book
 * [Blog](https://wiseodd.github.io/techblog/2017/01/26/kl-mle/)
 * [StackExchange](https://stats.stackexchange.com/a/345138)
+
+---
+
+## <a name='lips'></a>Lipschitz Continuity
+
+* This property is often used in deep learning and differential equations over 'funny' functions
+* Lipschitz continuity is a simple way to bound the function values \\
+$$ |f(x) - f(y)| \leq K \ |x-y| $$
+* Refer to the wiki page for a more generalized defination
+* Notice, the Lipschitz constant $$K$$ is the bound on the slope AKA derivative of the function in the specified domain
+* Using this condition provides a safe way to talk about differentiability of the function (Rademacher's Theorem)
+
+References
+* [StackExchange](https://math.stackexchange.com/questions/353276/intuitive-idea-of-the-lipschitz-function)
+* [Theorem](https://www.intfxdx.com/downloads/rademacher-thm-2015.pdf)
+* [Note](https://users.wpi.edu/~walker/MA500/HANDOUTS/LipschitzContinuity.pdf)
 
 ---
 
