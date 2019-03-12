@@ -19,6 +19,7 @@ layout: default
 [MAC vs Digital Signatures](#mac)  
 [MLE and KL Divergence](#mle)  
 [Lipschitz Continuity](#lips)   
+[Exposure bias problem](#bias)   
 
 ---
 
@@ -291,4 +292,20 @@ References
 * [Note](https://users.wpi.edu/~walker/MA500/HANDOUTS/LipschitzContinuity.pdf)
 
 ---
+
+## <a name='bias'></a>Exposure bias problem
+
+* Recurrent models are trained to predict the next word given the previous ground truth words as input
+* At test time, they are used to generate an entire sequence by predicting one word at a time, and by feeding the generated word back as input at the next time
+step
+* This is not good because the model was trained on a different distribution of inputs, namely, words drawn from the data distribution, as opposed to words drawn from the model distribution
+* The errors made along the way will quickly accumulate
+* This is knowns as exposure bias which occurs when a model is only exposed to the training data distribution, instead of its own predictions
+* This is the discrepancy between training and inference stages
+
+References
+* [Paper](https://arxiv.org/pdf/1511.06732.pdf)
+
+---
+
 
