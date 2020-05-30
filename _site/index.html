@@ -25,7 +25,11 @@
 <a href="#oneshot">One shot learning</a><br />
 <a href="#meta">Meta learning</a><br />
 <a href="#a3c">A3C</a><br />
-<a href="#ddl">Distributed DL</a></p>
+<a href="#ddl">Distributed DL</a><br />
+<a href="#mac">MAC vs Digital Signatures</a><br />
+<a href="#mle">MLE and KL Divergence</a><br />
+<a href="#lips">Lipschitz Continuity</a> <br />
+<a href="#bias">Exposure bias problem</a></p>
 
 <hr />
 
@@ -312,6 +316,108 @@
 </ul>
 
 <hr />
+
+<h2 id="mac-vs-digital-signatures"><a name="mac"></a>MAC vs Digital Signatures</h2>
+
+<ul>
+  <li>Message Authentication Codes (MAC): detects modification of messages based on a ‘shared key’
+    <ul>
+      <li>Symmetric key based algorithms for pretecting integrity</li>
+      <li>Example: HMAC (key-hashed MAC), CBC-MAC / CMAC (block cipher based)</li>
+    </ul>
+  </li>
+  <li>Digital Signatures: detects modification of messages based on a asymmetric key pair
+    <ul>
+      <li>Asymmetric keys: public key and private key</li>
+      <li>The sender signs with its private key, the receiver can verify the signature with the sender’s public key</li>
+    </ul>
+  </li>
+  <li>MACs are faster and take less size; but Digital Signatures provide non-repudiation (if the recipient passes the message and the proof to a third party, can the third party be confident that the message originated from the sender ?)</li>
+</ul>
+
+<p>References</p>
+<ul>
+  <li><a href="http://www.cs.cornell.edu/courses/cs5430/2016sp/l/08-macdigsig/notes.html">Cornell Course page</a></li>
+  <li><a href="https://crypto.stackexchange.com/questions/6523/what-is-the-difference-between-mac-and-hmac">Stackexchange</a></li>
+</ul>
+
+<hr />
+
+<h2 id="mle-and-kl-divergence"><a name="mle"></a>MLE and KL Divergence</h2>
+
+<ul>
+  <li>Maximum likelihood estimation (MLE):
+Given a dataset <script type="math/tex">\mathcal{D}</script> of sie n drawn from a distribution <script type="math/tex">P_{\theta} \in \mathcal{P}</script>, the MLE estimate of <script type="math/tex">\theta</script> is defined as</li>
+</ul>
+
+<p><script type="math/tex">\hat{\theta} = arg\;max_{\theta} \; \mathcal{L}(\theta, D)</script> or 
+<script type="math/tex">\hat{\theta} = arg\;max_{\theta} \; log \; P_{\theta}(\mathcal{D}|\theta)</script></p>
+<ul>
+  <li>Equivalently, this can be formulated as iid samples, negative log-likelihood</li>
+</ul>
+
+<p><script type="math/tex">NLL(\theta) = - \sum^N_{i=1} log \; p(y_i|x_i, \theta)</script></p>
+<ul>
+  <li>KL Divergence: 
+Relative entropy, it measures the dissimilarity of two probability distributions</li>
+</ul>
+
+<p><script type="math/tex">\mathcal{KL} (p||q) = \sum^K_{k=1} \; p_k \; log \; \frac{p_k}{q_k}</script></p>
+<ul>
+  <li>Expand above to get <script type="math/tex">\mathcal{KL} = -\mathcal{H}(p) + \mathcal{H}(p,q)</script></li>
+  <li>In the limit, KL is same as MLE</li>
+  <li>In generative models, MLE isn’t suitable as the probability density under the trained model for any actual input is almost always zero</li>
+  <li>For more details: <a href="https://www.inference.vc/how-to-train-your-generative-models-why-generative-adversarial-networks-work-so-well-2/">blog</a></li>
+</ul>
+
+<p>References</p>
+<ul>
+  <li>Murphy’s book</li>
+  <li><a href="https://wiseodd.github.io/techblog/2017/01/26/kl-mle/">Blog</a></li>
+  <li><a href="https://stats.stackexchange.com/a/345138">StackExchange</a></li>
+</ul>
+
+<hr />
+
+<h2 id="lipschitz-continuity"><a name="lips"></a>Lipschitz Continuity</h2>
+
+<ul>
+  <li>This property is often used in deep learning and differential equations over ‘funny’ functions</li>
+  <li>Lipschitz continuity is a simple way to bound the function values <br />
+<script type="math/tex">|f(x) - f(y)| \leq K \ |x-y|</script></li>
+  <li>Refer to the wiki page for a more generalized defination</li>
+  <li>Notice, the Lipschitz constant <script type="math/tex">K</script> is the bound on the slope AKA derivative of the function in the specified domain</li>
+  <li>Using this condition provides a safe way to talk about differentiability of the function (Rademacher’s Theorem)</li>
+</ul>
+
+<p>References</p>
+<ul>
+  <li><a href="https://math.stackexchange.com/questions/353276/intuitive-idea-of-the-lipschitz-function">StackExchange</a></li>
+  <li><a href="https://www.intfxdx.com/downloads/rademacher-thm-2015.pdf">Theorem</a></li>
+  <li><a href="https://users.wpi.edu/~walker/MA500/HANDOUTS/LipschitzContinuity.pdf">Note</a></li>
+</ul>
+
+<hr />
+
+<h2 id="exposure-bias-problem"><a name="bias"></a>Exposure bias problem</h2>
+
+<ul>
+  <li>Recurrent models are trained to predict the next word given the previous ground truth words as input</li>
+  <li>At test time, they are used to generate an entire sequence by predicting one word at a time, and by feeding the generated word back as input at the next time
+step</li>
+  <li>This is not good because the model was trained on a different distribution of inputs, namely, words drawn from the data distribution, as opposed to words drawn from the model distribution</li>
+  <li>The errors made along the way will quickly accumulate</li>
+  <li>This is knowns as exposure bias which occurs when a model is only exposed to the training data distribution, instead of its own predictions</li>
+  <li>This is the discrepancy between training and inference stages</li>
+</ul>
+
+<p>References</p>
+<ul>
+  <li><a href="https://arxiv.org/pdf/1511.06732.pdf">Paper</a></li>
+</ul>
+
+<hr />
+
 
   </div>
 <script type="text/javascript" async
