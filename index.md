@@ -315,7 +315,9 @@ References
 * Gini coefficient is a single number aimed at measureing the degree of inequality in a distribution. 
 * Given a group of people producing posts/comments, this can be used to estimate the dispersion in content production, i.e., most posts/comments come from a selectd few or from a diverse set of users.
 * A gini coefficient of 0 means perfect equality, and 1 means perfect concentration in a single individual.
-* $$ G = \frac{\sum_{i=1}^{n}\sum_{n}{j=1}}|x_i-x_j|}{2n^2\hat{x}}  $$
+
+$$ G = \frac{\sum_{i=1}^{n}\sum_{j=1}^{n}|x_i-x_j|}{2n^2\hat{x}}  $$
+
 * where n is the number of participating members, and $$x_i$$ is the content produced, or wealth.
 * Alternatively, Gini coefficient can be thought of as the ratio of the area that lies between the line of equality and the Lorenz curve over the total area under the line of equality.
 * Points on the Lorenz curve is the proportion of overall income or wealth assumed by the botton x% of the people [economics]. See the income distribution graph on the Lorenz curve wiki page. 
