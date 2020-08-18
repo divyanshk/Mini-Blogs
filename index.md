@@ -20,6 +20,8 @@ layout: default
 [MLE and KL Divergence](#mle)  
 [Lipschitz Continuity](#lips)   
 [Exposure bias problem](#bias)   
+[Gini coefficient](#gini)    
+[Pareto distribution](#pareto)    
 
 ---
 
@@ -308,4 +310,22 @@ References
 
 ---
 
+## <a name='gini'></a>Gini Coefficient
 
+* Gini coefficient is a single number aimed at measureing the degree of inequality in a distribution. 
+* Given a group of people producing posts/comments, this can be used to estimate the dispersion in content production, i.e., most posts/comments come from a selectd few or from a diverse set of users.
+* A gini coefficient of 0 means perfect equality, and 1 means perfect concentration in a single individual.
+* $$ G = \frac{\sum_{i=1}^{n}\sum_{n}{j=1}}|x_i-x_j|}{2n^2\hat{x}}  $$
+* where n is the number of participating members, and $$x_i$$ is the content produced, or wealth.
+* Alternatively, Gini coefficient can be thought of as the ratio of the area that lies between the line of equality and the Lorenz curve over the total area under the line of equality.
+* Points on the Lorenz curve is the proportion of overall income or wealth assumed by the botton x% of the people [economics]. See the income distribution graph on the Lorenz curve wiki page. 
+* Palma ratio is another measure of inequality.
+
+---
+
+## <a name='pareto'></a>Pareto distribution
+
+* Pareto optimality is a situation that cannot be modified so as to make any one individual or preference criterion better off without making at least one individual or preference creiterion worse off.
+* Write down the value model equations, constraints. Define the objective function. Run a convex hull optimizer on simple grid search to get a set of solutions for the equations. Use a tie-breaker (a way to decide on trade-off, either objectively coded or using product sense) to choose amongst the solutions. 
+
+---
