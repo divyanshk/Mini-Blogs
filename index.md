@@ -22,6 +22,7 @@ layout: default
 [Exposure bias problem](#bias)   
 [Gini coefficient](#gini)    
 [Pareto distribution](#pareto)    
+[Mixture of Experts](#moe)    
 
 ---
 
@@ -329,5 +330,38 @@ $$ G = \frac{\sum_{i=1}^{n}\sum_{j=1}^{n}|x_i-x_j|}{2n^2\hat{x}}  $$
 
 * Pareto optimality is a situation that cannot be modified so as to make any one individual or preference criterion better off without making at least one individual or preference creiterion worse off.
 * Write down the value model equations, constraints. Define the objective function. Run a convex hull optimizer on simple grid search to get a set of solutions for the equations. Use a tie-breaker (a way to decide on trade-off, either objectively coded or using product sense) to choose amongst the solutions. 
+
+---
+
+## <a name='moe'></a>Mixture of Experts
+
+* MoEs let us scale the model capacity without increasing parameter size; this is possible because of conditional activation of neurons; every MoE layer has a certain number of experts (it can be a FNN or a MoE itself) and a router that determines which tokens are sent to which expert(s). The router is composed of learned parameters and is pretrained at the same time as the rest of the network.
+* The core gains of MoE is due to its conditional activation (better training efficiency, faster inference compared to dense counterparts), but that is also what make it hard to fine-tune
+* To overcome learned router patters when fine-tuning, one can try to:
+    1. Unfreeze router with lower learning rate
+    2. Add load balancing loss
+    3. Use expert-specific learning rates
+    4. Apply routing regularization (auxiliary losses, implement expert dropout)
+    5. Monitor expert utilization and adjust accordingly
+* Another challenge with MoE is reduction in effective batch size (each token is sent to a different expert, leading to uneven batch sizes per expert and potential underutilization)
+    * to overcome this: one can define an expert's capacity and try to send overflow tokens to the next choice expert. Trade-offs: some tokens might not get their optimal expert
+    *  Add auxiliary loss term that penalizes uneven expert usage; this loss ensures that all experts receive a roughly equal number of training examples
+    * other alternatives: expert dropout, token dropping, token buffering
+        * all trade-off model quality vs latency
+    * Dynamic Batching Strategies: batch packing (Reorganize batches to ensure more even expert distribution), expert batching (Group tokens going to the same expert across multiple input batches)
+    * expert parallelism
+* MoEs and GPU
+    * The branching step in MoE leads to suboptimal GPU utilization. GPUs are designed for SIMD, but with MoE every token (data) can lead to a different expert (instruction), you get thread divergence - GPU cores end up idle while waiting for divergent computations to complete
+    * If different cores/machines host different experts, tokens need to be sent to different machines causing network bandwidth to become a bottleneck; load balancing becomes difficult as some experts might be overused while others sit idle
+    * Solutions:
+        * Better routing to maximize GPU utilization (based on expert placement, optimize input routing to minimize communication between devices)
+        * Expert parallelism (experts are placed on different workers. If combined with data parallelism, each core has a different expert and the data is partitioned across all cores)
+        * Expert sharding
+
+
+References
+* [2017 SG-MoE paper](https://arxiv.org/pdf/1701.06538)
+* [Switch Transformers](https://arxiv.org/pdf/2101.03961)
+* [HuggingFace blog](https://huggingface.co/blog/moe)
 
 ---
