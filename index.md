@@ -23,6 +23,7 @@ layout: default
 [Gini coefficient](#gini)    
 [Pareto distribution](#pareto)    
 [Mixture of Experts](#moe)    
+[GRPO](#grpo)    
 
 ---
 
@@ -363,5 +364,31 @@ References
 * [2017 SG-MoE paper](https://arxiv.org/pdf/1701.06538)
 * [Switch Transformers](https://arxiv.org/pdf/2101.03961)
 * [HuggingFace blog](https://huggingface.co/blog/moe)
+
+---
+
+## <a name='grpo'></a>Group Relative Policy Optimization (GRPO)
+
+* At a high level, in a typical PPO setting
+    * policy: the model being trained using RL
+    * reward model: a model to score a response
+    * value / critic: a model to estimate if a response is better or worse than average
+    * reference model: the pre-trained model before we start doing RL on it
+* Instead of a resource intensive 'critic' model, GRPO generates a group of outputs, assigning value to each of them. The average reward of the group serves as a baseline. The model updates its parameters  such that better-than-average outputs are encouraged, discouraging worse-than-average outputs.
+* Instead of adding KL penalty in the reward (which PPO does), GRPO regularizes by directly adding the KL divergence between the trained policy and the reference policy to the loss.
+* The advantage per input prompt is $$ A_{i,t} = \frac{r_i - \text{mean}(r)}{\text{std}(r)} $$
+* For each question 𝑞, GRPO samples a group of outputs $${𝑜1, 𝑜2, · · · , 𝑜𝐺}$$  from the old policy 𝜋𝜃𝑜𝑙𝑑 and then optimizes the policy model by maximizing the following objective $$\begin{align*}
+J_{GRPO}(\theta) &= \mathbb{E}_{q \sim P(Q), \{o_i\}_{i=1}^G \sim \pi_{\theta_{old}}(O|q)} \Bigg[&\quad \frac{1}{G} \sum_{i=1}^{G} \frac{1}{|o_i|} \sum_{t=1}^{|o_i|} \min\left( r_{i,t}(\theta) \hat{A}_{i,t}, \text{clip}(r_{i,t}(\theta), 1-\varepsilon, 1+\varepsilon) \hat{A}_{i,t}\right) &\quad - \beta D_{KL}(\pi_\theta || \pi_{ref}) \Bigg]
+\end{align*}$$ where $$r_{i,t}(\theta) = \frac{\pi_\theta(o_{i,t}|q, o_{i,<t})}{\pi_{\theta_{old}}(o_{i,t}|q, o_{i,<t})}$$ ϵ and β are hyper-parameters, and DKL denotes the KL divergence between
+the learned policy and a reference policy πref.
+* Now, you can do all sorts of tricks with how to scale (over local group or overall batch), to scale or not, to use D_KL or not, to clip or not, etc to optimize for your pipeline.
+    * Variants to GRPo exist like DAPO
+* Generation (generating G outputs) is often the main bottleneck when training with online methods. This is where async RL or vllm based optimizations come in. 
+
+References
+* [paper](https://arxiv.org/abs/2402.03300)
+* [blog](https://aipapersacademy.com/deepseekmath-grpo/)
+* [another useful paper](https://arxiv.org/pdf/2508.08221)
+* [HF GRPO Trainer](https://huggingface.co/docs/trl/main/en/grpo_trainer)
 
 ---
