@@ -24,6 +24,7 @@ layout: default
 [Pareto distribution](#pareto)    
 [Mixture of Experts](#moe)    
 [GRPO](#grpo)    
+[GPU Comms](#gpucomms)    
 
 ---
 
@@ -390,5 +391,15 @@ References
 * [blog](https://aipapersacademy.com/deepseekmath-grpo/)
 * [another useful paper](https://arxiv.org/pdf/2508.08221)
 * [HF GRPO Trainer](https://huggingface.co/docs/trl/main/en/grpo_trainer)
+
+---
+
+## <a name='gpucomms'></a> GPU Comms
+
+* Communication Channels: GPU clusters use a hierarchy of communication channels. Intra-node communication between GPUs within a single server primarily uses high-speed NVLink and PCIe. Inter-node communication across servers relies on specialized networking like InfiniBand or RoCE, which often leverage GPUDirect RDMA to bypass the CPU.
+* NCCL for Collective Communication: For collective communication within a group of GPUs, the NVIDIA Collective Communications Library (NCCL) is the standard. It orchestrates data exchange and optimizes the communication path based on the underlying hardware interconnect, such as NVLink or PCIe.
+* Creating Separate NCCL Groups: To enable two separate, concurrent collective communication channels between distinct contiguous GPU groups, you must create an independent NCCL communicator for each group. The communicators are created by initializing them with their own unique ID and specifying the exact set of GPUs belonging to that group.CUDA for Point-to-Point 
+* Communication: NCCL does not natively support creating specific, non-contiguous communication channels like GPU \(i\) to GPU \(i+7\). For such specialized point-to-point connections, you must use the CUDA API. This involves enabling peer-to-peer (P2P) access between the two specific GPUs and then performing a direct cudaMemcpyPeer memory copy.
+* Ensuring Independent Operations: Using separate NCCL communicators and CUDA streams for each GPU group allows for independent and potentially parallel communication. However, NCCL operations are blocking within their communicator, and proper synchronization is critical to avoid deadlocks, particularly when managing multiple concurrent communicators. 
 
 ---
