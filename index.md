@@ -25,6 +25,7 @@ layout: default
 [Mixture of Experts](#moe)    
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
+[Async SGD, Hogwild](#asyncsgd)    
 
 ---
 
@@ -401,5 +402,19 @@ References
 * Creating Separate NCCL Groups: To enable two separate, concurrent collective communication channels between distinct contiguous GPU groups, you must create an independent NCCL communicator for each group. The communicators are created by initializing them with their own unique ID and specifying the exact set of GPUs belonging to that group.CUDA for Point-to-Point 
 * Communication: NCCL does not natively support creating specific, non-contiguous communication channels like GPU \(i\) to GPU \(i+7\). For such specialized point-to-point connections, you must use the CUDA API. This involves enabling peer-to-peer (P2P) access between the two specific GPUs and then performing a direct cudaMemcpyPeer memory copy.
 * Ensuring Independent Operations: Using separate NCCL communicators and CUDA streams for each GPU group allows for independent and potentially parallel communication. However, NCCL operations are blocking within their communicator, and proper synchronization is critical to avoid deadlocks, particularly when managing multiple concurrent communicators. 
+
+---
+
+## <a name='asyncsgd'></a> Async SGD, Hogwild
+#### Async SGD
+* Decentralized updates: Multiple workers compute and apply gradient updates to a central model independently and in parallel.
+* Eliminates wait time: Workers do not wait for others, which avoids the "straggler effect" and improves resource utilization.
+* Stale gradients: This parallelism can lead to "stale" gradients, where a worker's update is based on an older version of the parameters.
+* Improved speed: Can significantly speed up training by fully utilizing available computational resources.
+#### Hogwild!
+* Shared memory: A specific type of async SGD designed for multi-core processors with shared memory.
+* Lock-free updates: Workers update the shared model parameters without locking, which removes synchronization overhead.
+* Sparse data is key: Most effective for sparse datasets and models, where the chance of workers overwriting each other's updates is low.
+* Near-linear speedup: Enables nearly linear speedups with the number of processors on suitable problems.
 
 ---
