@@ -2,7 +2,8 @@
 layout: default
 ---
 
-[Softmax is a weighting scheme](#softmax)
+[Pointwise Attention](#pattn)  
+[Softmax is a weighting scheme](#softmax)  
 [Deconvolution Layer](#deconv)  
 [Batch Normalization](#batchnorm)  
 [Q-learning v SARSA](#qlearningsarsa)  
@@ -29,6 +30,16 @@ layout: default
 [Async SGD, Hogwild](#asyncsgd)    
 
 ---
+
+## <a name="pattn"></a>Pointwise Attention
+
+* Pointwise attention replaces the restrictive, zero-sum Softmax function with a flexible, independent intensity scoring system for each sequence element. 
+* By removing the global normalization constraint, it allows models to represent complex, multifaceted user interests without signal dilution. 
+* This shift enables massive computational efficiency by eliminating global synchronization bottlenecks, directly facilitating the scaling of trillion-parameter generative recommenders. 
+* It is used in HSTUs. It essentially treats RecSys problem as a hardware-friendly, parallelizable intensity-matching problem rather than a traditional, competitive classification task.
+
+---
+
 ## <a name="softmax"></a>Softmax is a weighting scheme
 
 * Softmax is a weighting scheme — it converts a vector of real-valued scores into positive weights that sum to 1, so they can be read as a probability distribution. Mechanically: exponentiate each score, then normalize by the sum. The exponential makes everything positive and amplifies differences, and the "soft" part is that it's a smooth, differentiable stand-in for picking the max. A temperature parameter controls how peaky vs. uniform the output is.
