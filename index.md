@@ -2,6 +2,7 @@
 layout: default
 ---
 
+[Softmax is a weighting scheme](#softmax)
 [Deconvolution Layer](#deconv)  
 [Batch Normalization](#batchnorm)  
 [Q-learning v SARSA](#qlearningsarsa)  
@@ -26,6 +27,13 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+## <a name="softmax"></a>Softmax is a weighting scheme
+
+* Softmax is a weighting scheme — it converts a vector of real-valued scores into positive weights that sum to 1, so they can be read as a probability distribution. Mechanically: exponentiate each score, then normalize by the sum. The exponential makes everything positive and amplifies differences, and the "soft" part is that it's a smooth, differentiable stand-in for picking the max. A temperature parameter controls how peaky vs. uniform the output is.
+* But calling it "just" a weighting scheme undersells it, because the specific exp-then-normalize form isn't arbitrary. One deep reason is the maximum entropy interpretation: if you have scores for some options and want to turn them into a distribution that (a) respects those scores in the sense that the expected score matches a target value, and (b) otherwise assumes as little as possible — i.e., maximizes entropy — then softmax is the unique answer. Any other weighting scheme would be smuggling in extra assumptions.
+* The gradient has a remarkably clean form. Also, softmax is smooth and differentiable everywhere.
 
 ---
 
