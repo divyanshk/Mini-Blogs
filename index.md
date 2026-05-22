@@ -2,6 +2,7 @@
 layout: default
 ---
 
+[Stages of Post Training](#posttraining)
 [Small Language Models](#slm)  
 [Pointwise Attention](#pattn)  
 [Softmax is a weighting scheme](#softmax)  
@@ -32,6 +33,36 @@ layout: default
 
 ---
 
+## <a name="posttraining"></a>Stages of Post Training
+
+* 1. Pre-training (the "Pre/Mid-training" box)
+Objective: Predict the next token on a massive corpus (28T tokens in LFM2.5's case — that's roughly the scale of Llama 3, DeepSeek-V3, etc.).
+    * What it adds: Knowledge and world model. This is where the model learns grammar, facts, reasoning patterns, code syntax, multiple languages — essentially compressing the internet into weights. The model emerges as a brilliant autocomplete: give it "The capital of France is" and it says "Paris."
+    * What it doesn't add: Any notion of being helpful, following instructions, or having a conversation. A raw pre-trained model, if you ask it a question, might just generate more questions — because that's a plausible continuation of text that contains a question.
+    * "Mid-training" nuance: Increasingly people split this into pre-training (broad web data) and mid-training (higher-quality, curated data, longer context, domain-specific mixes, sometimes annealing the learning rate). It's still next-token prediction, just with a sharper data diet near the end.
+    * Cost: ~95%+ of total compute. Everything downstream is cheap by comparison.
+* 2. Supervised Fine-Tuning (SFT)
+    * Objective: Train on curated (prompt, ideal response) pairs, still using next-token prediction — but now the "next tokens" are demonstrations of good behavior.
+    * What it adds: Format and instruction-following. The model learns the shape of a helpful response: when asked a question, answer it; when given a task, attempt it; use this chat template; refuse clearly harmful things. This is also where tool-use formats, reasoning styles, and persona are typically installed.
+    * Key insight: SFT is essentially teaching the model which slice of its pre-trained distribution to operate in. The capability was already there from pre-training; SFT just steers toward the helpful-assistant region of behavior-space.
+    * Limitation: SFT can only imitate the demonstrations it's shown. It doesn't know what makes a response better than another — only what an acceptable response looks like.
+* 3. Preference Alignment (RLHF / DPO / etc.)
+    * Objective: Train on (prompt, preferred response, rejected response) triples. The model learns to rank outputs the way humans (or a reward model trained on humans) would.
+    * What it adds: Taste and calibration. This is the difference between "technically correct" and "actually good." Preference data teaches things that are hard to demonstrate but easy to compare:
+        * Tone, helpfulness, honesty calibration
+        * Refusing the right things and not refusing the wrong things
+        * Concise vs. verbose, when to ask clarifying questions
+        * Reducing hallucination (preferring "I don't know" over confident nonsense)
+    * Why it's separate from SFT: With SFT, you need someone to write the ideal answer. With preferences, you just need someone to pick the better of two — much cheaper, and captures subjective quality SFT can't.
+    * Methods: Classical RLHF uses a reward model + PPO. DPO (Direct Preference Optimization) skips the reward model and trains directly on preference pairs. IPO, KTO, SimPO are variants on the same theme.
+* 4. Reinforcement Learning (RL with verifiable rewards)
+    * Objective: Let the model generate long outputs (often chain-of-thought), score them against a verifiable signal (did the math answer match? did the code pass tests? did the proof check?), and reinforce the trajectories that worked.
+    * What it adds: Reasoning depth. This is the stage that produced o1, R1, and the current "thinking model" wave. The model learns to:Generate long internal reasoning traces, Backtrack, self-correct, try alternative approaches, Spend more tokens on harder problems
+    * Why it's different from preference alignment: Preference alignment uses human judgment as the signal (squishy, expensive, capped by human ability). RL with verifiable rewards uses ground truth (cheap, scalable, can exceed average human performance because the signal is objective). You can generate millions of math problems and grade them automatically — no humans in the loop.
+    * Why it goes last: RL is unstable and easily destroys capabilities. You want the model already competent and aligned before you let it explore. The slide's caption "Generate thinking traces" is exactly right — this stage is where reasoning behaviors are amplified.
+
+---
+
 ## <a name="slm"></a>Small Language Models
 
 * The embedding takes up so much of an SLM's params
@@ -40,7 +71,7 @@ layout: default
 * Effective size doesnt take embedding layer size into account. the reasoning etc comes from the other parameters, not embedding layers. so SLM are indeed very memory efficient
 * A lot of an SLM's "knowledge" gets baked in through the embeddings during distillation from a larger teacher. The transformer learns the reasoning patterns, but the embedding inherits a compressed semantic space from the teacher. That's why tied embeddings (input embedding = output unembedding but just transposed, which both Gemma and Qwen do) are so common in this size class — you can't afford two copies of that matrix.
     * token IDs → [input embedding] → vectors → [transformer] → vectors → [unembedding] → logits → token IDs 
-* In a small model, the embedding is a huge fraction of capacity, so transferring teacher knowledge into that embedding (your earlier point) is doing real work. In a large model the embedding is a thin layer — most of what distillation transfers has to land in the transformer weights instead.
+* In a small model, the embedding is a huge fraction of capacity, so transferring teacher knowledge into that embedding is doing real work. In a large model the embedding is a thin layer — most of what distillation transfers has to land in the transformer weights instead.
 
 ---
 
