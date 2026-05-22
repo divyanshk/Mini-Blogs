@@ -2,6 +2,7 @@
 layout: default
 ---
 
+[Small Language Models](#slm)  
 [Pointwise Attention](#pattn)  
 [Softmax is a weighting scheme](#softmax)  
 [Deconvolution Layer](#deconv)  
@@ -28,6 +29,18 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name="slm"></a>Small Language Models
+
+* The embedding takes up so much of an SLM's params
+    * Embedding size is roughly vocab_size × hidden_dim. Vocabulary doesn't shrink when you shrink the model — Gemma still needs to represent ~256k tokens, Qwen ~150k. So while you can cut layers and narrow the hidden dim to shrink the transformer stack, the embedding matrix barely budges. That's why it balloons to 63% of params in a 270M model but would be maybe 5% in a 70B model. The "small" gets squeezed into the part that actually does compute.
+    * The compute is down by the transformer blocks sitting on top of the embeddings
+* Effective size doesnt take embedding layer size into account. the reasoning etc comes from the other parameters, not embedding layers. so SLM are indeed very memory efficient
+* A lot of an SLM's "knowledge" gets baked in through the embeddings during distillation from a larger teacher. The transformer learns the reasoning patterns, but the embedding inherits a compressed semantic space from the teacher. That's why tied embeddings (input embedding = output unembedding but just transposed, which both Gemma and Qwen do) are so common in this size class — you can't afford two copies of that matrix.
+    * token IDs → [input embedding] → vectors → [transformer] → vectors → [unembedding] → logits → token IDs 
+* In a small model, the embedding is a huge fraction of capacity, so transferring teacher knowledge into that embedding (your earlier point) is doing real work. In a large model the embedding is a thin layer — most of what distillation transfers has to land in the transformer weights instead.
 
 ---
 
