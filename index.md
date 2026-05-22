@@ -2,7 +2,7 @@
 layout: default
 ---
 
-[Stages of Post Training](#posttraining)
+[Stages of Model Training](#modeltraining)
 [Small Language Models](#slm)  
 [Pointwise Attention](#pattn)  
 [Softmax is a weighting scheme](#softmax)  
@@ -33,7 +33,7 @@ layout: default
 
 ---
 
-## <a name="posttraining"></a>Stages of Post Training
+## <a name="posttraining"></a>Stages of Model Training
 
 * 1. Pre-training (the "Pre/Mid-training" box)
 Objective: Predict the next token on a massive corpus (28T tokens in LFM2.5's case — that's roughly the scale of Llama 3, DeepSeek-V3, etc.).
