@@ -1,7 +1,7 @@
 ---
 layout: default
 ---
-
+[Cross Domain RecSys problems](#cdr)
 [Stages of Model Training](#modeltraining)
 [Small Language Models](#slm)  
 [Pointwise Attention](#pattn)  
@@ -30,6 +30,15 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name="cdr"></a> Cross Domain RecSys problems
+
+* Two main issues when doing cross domain recommendations: data sparsity and heterogenity
+* Data Sparsity: Interaction matrices are nearly empty (the "cold-start" problem), leaving traditional models without enough behavioral overlap to find patterns.
+* Heterogeneity: Domains have mismatched item features and differing interaction contexts, preventing direct mathematical alignment.
+* The LLM Solution: LLMs bypass both issues by translating disparate domain data into natural language and using broad semantic knowledge to bridge the gaps.
 
 ---
 
