@@ -2,7 +2,7 @@
 layout: default
 ---
 [Cross Domain RecSys problems](#cdr)  
-[Stages of Model Training](#modeltraining)  
+[Stages of Model Training](#posttraining)  
 [Small Language Models](#slm)  
 [Pointwise Attention](#pattn)  
 [Softmax is a weighting scheme](#softmax)  
