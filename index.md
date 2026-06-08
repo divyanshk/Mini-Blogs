@@ -55,6 +55,11 @@ layout: default
 
 * Why shard? Scalability. Distribute query load. Same idea as in SIMD or Data Parallel training
 * Challenges to consider: data ordering - after sharding do you know the order? Read time data order matters too - you don't want one shard being a _hot spot_.
+* There are two main approaches to partitioning: key based, or hash based
+* At some point, one may need to rebalance the paritions to handle the growing or changing demands. 
+    * Rebalancing is hard and shouldn't be done often. There has to be minimum requirements that need to be stated before rebalancing
+    * You should know what is changing and what is not. For eg, total logical partitions can change but actual partitions set by the user during setup shouldn't. You can decide if you want to move the entire parition to a single node, or split it across nodes.
+    * For an optimal partition size: trade-off overhead of small partitions vs recovery costs for larger partitions. A lot depends on read and write access patterns.
 
 ---
 
