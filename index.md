@@ -5,6 +5,7 @@ layout: default
 [Reliability in Data Systems](#reliability)   
 [Scaling up vs Scaling out](#scaling)   
 [OLTP vs OLAP](#olap)  
+[Storage Engines](#engine)  
 [Cross Domain RecSys problems](#cdr)  
 [Stages of Model Training](#posttraining)  
 [Small Language Models](#slm)  
@@ -34,6 +35,14 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name="engine"></a>Storage Engines
+
+* Storage engines handle physical data I/O — they translate SQL queries into actual read/write operations on disk, managing how data is laid out and cached in memory.
+* They enforce reliability and concurrency — handling transactions (ACID), crash recovery (WAL), and multi-user access control so data stays consistent.
+* Different engines suit different workloads — e.g. InnoDB for transactions, RocksDB for write-heavy loads, columnar engines for analytics.
 
 ---
 
