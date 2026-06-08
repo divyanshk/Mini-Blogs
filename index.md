@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[Reliability in Data Systems](#reliability)   
 [Scaling up vs Scaling out](#scaling)   
 [OLTP vs OLAP](#olap)  
 [Cross Domain RecSys problems](#cdr)  
@@ -32,6 +33,19 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name="reliability"></a>Reliability in Data Systems
+
+* Sync vs Async
+    * Synchronous: Write confirmed after all replicas ack + Zero data loss on failover; higher write latency; replica lag = stall
+    * Asynchronous: Write confirmed after primary only + Low latency; replica lag doesn't block; data loss window if primary crashes
+* Sync vs async — the core tension
+    * Sync = durability guarantee, but every write is only as fast as your slowest replica. One lagging replica stalls all writes.
+    * Async = low-latency writes, but if the primary crashes before replication completes, you lose that data. Most systems default here and accept the risk.
+    * Semi-sync (MySQL's approach) is a common middle ground — wait for ack from just one replica, not all.
+* 
 
 ---
 
