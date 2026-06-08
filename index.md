@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[OLTP vs OLAP](#olap)  
 [Cross Domain RecSys problems](#cdr)  
 [Stages of Model Training](#posttraining)  
 [Small Language Models](#slm)  
@@ -30,6 +31,18 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name="olap"></a> OLTP vs OLAP
+
+* OLTP (Online Transaction Processing)
+    * Powers real-time daily operations by rapidly processing high volumes of simple transactions, like sales and system updates.
+    * Relies on highly normalized databases optimized for strict data integrity and lightning-fast write speeds.
+
+* OLAP (Online Analytical Processing)
+    * Analyzes massive amounts of historical data to uncover business trends and drive strategic decisions.
+    * Relies on denormalized data warehouses optimized for executing complex, read-heavy queries and generating reports.
 
 ---
 
