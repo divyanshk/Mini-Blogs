@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[Message Brokers](#brokers)  
 [MapReduce](#mapreduce)  
 [Skewed workdloads in a KV store](#skew)  
 [Partitioning](#sharding)   
@@ -38,6 +39,17 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name="brokers"></a>Message Brokers
+
+* A message broker is middleware that sits between services, decoupling producers (who send messages) and consumers (who receive them). Instead of Service A talking directly to Service B, both talk to the broker — A deposits a message, B picks it up when ready
+    * Core patterns: queues (one producer → one consumer, each message processed once) and pub/sub topics (one producer → many consumers, each gets a copy). Common systems: Kafka, RabbitMQ
+* It provides decoupling between producers and consumers. 
+* It shifts the focus on fault tolerance and bottleneck handling from consumers/producers to the broker. So if the broker does the job well, things should scale well.
+* Other advantages: load leveling — smooths out traffic spikes; consumers process at their own pace; Async workflows — producers don't block waiting for a response.
+* Rule of thumb: brokers shine when services have mismatched throughput or availability, or when you need fan-out to multiple consumers. They're overkill for simple, tightly-coupled request/response flows where latency matters most. Remember don't add something _just_ because you know it exists.
 
 ---
 
