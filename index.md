@@ -64,6 +64,11 @@ layout: default
         * Identify the bottleneck: is it network bandwidth, replica I/O throughput, or a single large transaction holding up the stream?
         * Parallelize replication — most modern DBs support multi-threaded or parallel apply on replicas to keep up with high write volumes.
         * Reduce write pressure on the primary: batch writes, avoid long-running transactions that create huge replication events.
+* Architectural responses:
+    * If a replica is permanently too far behind, take it out of the read pool entirely — a stale replica is often worse than no replica.
+    * Consider semi-synchronous replication for your most critical replicas: at least one replica stays close to real-time, giving you a fast failover candidate.
+    * For extreme lag tolerance requirements, look at CDC (Change Data Capture) pipelines with explicit lag SLAs rather than native replication.
+
 ---
 
 ## <a name="scaling"</a>Scaling up vs Scaling out 
