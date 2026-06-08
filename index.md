@@ -1,6 +1,8 @@
 ---
 layout: default
 ---
+[Skewed workdloads in a KV store](#skew)  
+[Partitioning](#sharding)   
 [Change Data Capture](#cdc)   
 [Reliability in Data Systems](#reliability)   
 [Scaling up vs Scaling out](#scaling)   
@@ -35,6 +37,20 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name="skew"></a>Skewed workdloads in a KV store
+
+* 
+
+---
+
+## <a name="sharding"></a>Partitioning
+
+* Why shard? Scalability. Distribute query load. Same idea as in SIMD or Data Parallel training
+* Challenges to consider: data ordering - after sharding do you know the order? Read time data order matters too - you don't want one shard being a _hot spot_.
+* 
 
 ---
 
