@@ -45,8 +45,15 @@ layout: default
     * Sync = durability guarantee, but every write is only as fast as your slowest replica. One lagging replica stalls all writes.
     * Async = low-latency writes, but if the primary crashes before replication completes, you lose that data. Most systems default here and accept the risk.
     * Semi-sync (MySQL's approach) is a common middle ground — wait for ack from just one replica, not all.
-* 
-
+* Replication lag anomalies
+    * Async lag creates user-visible weirdness: you submit a form and immediately refresh to see it missing. The fix is to route reads-after-writes back to the primary, or track the user's write timestamp and only serve reads from replicas that have caught up.
+    * Monotonic reads: a user shouldn't see data "go backward" if their requests land on different replicas at different lag levels. Pin users to a specific replica or use session-level consistency tokens.
+* Failed replicas
+    * Follower failure: straightforward — it reconnects, replays the replication log (WAL) from its last known position, catches up, and rejoins.
+    * Leader failure: much harder. You detect the outage (usually via timeout/heartbeat), elect the most up-to-date follower, and update clients to point at the new leader. Key risks:
+        * The new leader may be behind, meaning some writes are lost. Do you discard them or try to reconcile?
+        * Split-brain: the old leader comes back and both nodes think they're in charge.
+        
 ---
 
 ## <a name="scaling"</a>Scaling up vs Scaling out 
