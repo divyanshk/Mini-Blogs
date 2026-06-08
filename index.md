@@ -39,6 +39,7 @@ layout: default
 
 * Scale up means giving one machine more power — bigger CPU, more RAM, faster disk. It's conceptually simple: your software doesn't change, you just buy better hardware. The problems are stark though. That machine is a single point of failure — when it goes down, everything goes down. You also hit a hard ceiling: there's a maximum size server you can buy, and as you approach it, the cost curve bends sharply upward.
 * Scale out means adding more machines and spreading the load across them. The load balancer routes traffic, and any individual node is expendable. Lose one server and the others absorb its share — this is the foundation of real fault tolerance. There's no practical upper bound to capacity; you just add more nodes.
+* In practice, most serious systems do both: scale out across regions and availability zones for resilience, then scale up individual nodes to a reasonable size to minimize coordination overhead.
 
 ---
 
