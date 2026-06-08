@@ -48,12 +48,22 @@ layout: default
 * Replication lag anomalies
     * Async lag creates user-visible weirdness: you submit a form and immediately refresh to see it missing. The fix is to route reads-after-writes back to the primary, or track the user's write timestamp and only serve reads from replicas that have caught up.
     * Monotonic reads: a user shouldn't see data "go backward" if their requests land on different replicas at different lag levels. Pin users to a specific replica or use session-level consistency tokens.
+    * Consistent Prefix reads: users should see the data in a sstate that makes causal sense; establish this-happened-before-that dependencies (as relibly as you can).
 * Failed replicas
     * Follower failure: straightforward — it reconnects, replays the replication log (WAL) from its last known position, catches up, and rejoins.
     * Leader failure: much harder. You detect the outage (usually via timeout/heartbeat), elect the most up-to-date follower, and update clients to point at the new leader. Key risks:
         * The new leader may be behind, meaning some writes are lost. Do you discard them or try to reconcile?
         * Split-brain: the old leader comes back and both nodes think they're in charge.
-        
+* Leader-based replication funnels all writes through a single node to establish a definitive ordering of changes, which are then propagated to followers. Reads can be served by any replica, scaling read throughput horizontally — but followers may lag behind the leader, so reads can return stale data. This is the classic availability-vs-consistency tradeoff: you get read scalability, but only the leader is guaranteed to have the latest state.
+    * You can add hecks to ensure the user is being served on the freshest data based on its past write history
+* When replication lag grows large, you have a few levers:
+    * Detect and monitor
+    * Protect reads from stale data
+        * but this can mean increased pressure on the fresh replicas or leaders
+    * Reduce the lag itself:
+        * Identify the bottleneck: is it network bandwidth, replica I/O throughput, or a single large transaction holding up the stream?
+        * Parallelize replication — most modern DBs support multi-threaded or parallel apply on replicas to keep up with high write volumes.
+        * Reduce write pressure on the primary: batch writes, avoid long-running transactions that create huge replication events.
 ---
 
 ## <a name="scaling"</a>Scaling up vs Scaling out 
