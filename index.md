@@ -42,7 +42,12 @@ layout: default
 
 ## <a name="skew"></a>Skewed workdloads in a KV store
 
-* 
+* Key Salting — Append a random suffix to spread one key across N partitions. Writes go to a random shard; reads fan out to all shards and merge. Best for: write-heavy hot keys. Trade-off: read fan-out cost.
+* Caching Layer — Place Redis/Memcached in front of the hot key to absorb reads before they hit the DB. Best for: read-heavy, infrequently changing values. Trade-off: cache invalidation complexity on writes.
+* Read Replicas — Replicate the hot partition and load-balance reads across replicas. Best for: read-heavy workloads. Trade-off: replication lag; writes still bottleneck on the primary.
+* Local (In-App) Cache — Store the hot value in each app server's memory. Zero network hops. Best for: stable, frequently read values like configs or feature flags. Trade-off: stale data risk; high memory usage at scale. See _memoize_ in Python for similar idea.
+* Write Buffering/Batching — Queue writes (e.g. via Kafka) and flush to the DB in batches. Best for: write-heavy, bursty traffic. Trade-off: introduces write latency and eventual consistency.
+* Counter Sharding — Split a counter key into N shards, increment a random one on write, sum all on read. Best for: aggregation keys like likes, views, or scores. Trade-off: read requires aggregating all shards.
 
 ---
 
@@ -50,7 +55,6 @@ layout: default
 
 * Why shard? Scalability. Distribute query load. Same idea as in SIMD or Data Parallel training
 * Challenges to consider: data ordering - after sharding do you know the order? Read time data order matters too - you don't want one shard being a _hot spot_.
-* 
 
 ---
 
