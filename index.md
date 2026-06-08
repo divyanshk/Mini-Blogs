@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[MapReduce](#mapreduce)  
 [Skewed workdloads in a KV store](#skew)  
 [Partitioning](#sharding)   
 [Change Data Capture](#cdc)   
@@ -37,6 +38,15 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name="mapreduce></a>MapReduce
+* MapReduce is a programming model for processing large datasets in parallel across a distributed cluster.
+* Map → Shuffle → Reduce: Input data is split into chunks, a map function processes each chunk into key-value pairs, those pairs are shuffled/sorted by key, then a reduce function aggregates them into a final result (e.g., counting word frequencies across millions of documents).
+* Fault-tolerant but batch-oriented: It handles node failures gracefully by re-running failed tasks, but it writes intermediate results to disk between stages — making it slow and ill-suited for iterative algorithms or anything requiring low latency.
+* Largely superseded for most use cases: Frameworks like Spark (in-memory processing, 10–100× faster for iterative workloads), Flink (true streaming), and Dask/Ray (Python-native) have replaced MapReduce for most analytics. MapReduce's paradigm lives on conceptually, but systems like BigQuery or Snowflake abstract it away entirely behind SQL.
+* The core idea — distribute work, process locally, then aggregate — remains foundational. But the original Hadoop MapReduce implementation is now mostly a historical artifact in production systems.
 
 ---
 
