@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[Change Data Capture](#cdc)   
 [Reliability in Data Systems](#reliability)   
 [Scaling up vs Scaling out](#scaling)   
 [OLTP vs OLAP](#olap)  
@@ -35,6 +36,14 @@ layout: default
 [Async SGD, Hogwild](#asyncsgd)    
 
 ---
+
+## <a name="cdc"></a>Change Data Capture
+
+* Replication keeps identical copies of your database in sync (MySQL → MySQL); CDC turns every database change into an event stream that any system can consume — Elasticsearch, Redis, a data warehouse, all at once.
+* Replication is tightly coupled — a lagging replica affects failover decisions and read freshness; CDC consumers are independent, each processing the stream at their own pace without affecting the source or each other.
+* Replication is infrastructure-level plumbing you mostly don't see; CDC is an explicit, queryable audit log of every insert, update, and delete — a first-class artifact you can replay, rewind, or route to new consumers added later.
+
+--- 
 
 ## <a name="reliability"></a>Reliability in Data Systems
 
