@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[On-Policy Distillation](#opd)   
 [Forward KL vs Reverse KL](#reversekl)   
 [Message Brokers](#brokers)  
 [MapReduce](#mapreduce)  
@@ -40,6 +41,14 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name="opd"></a>On-Policy Distillation
+
+* he student generates its own trajectories (including its own mistakes), and the teacher scores every token — not just whether the final answer was right. This gives a dense signal rather than the sparse "right/wrong" feedback of RL.
+* Because the student trains on states it visits rather than states the teacher visits, it learns to recover from its own errors — fixing the compounding drift problem of off-policy distillation.
+* It optimizes reverse KL: the student is pushed away from tokens the teacher finds unlikely, token by token, across its own rollouts.
 
 ---
 
