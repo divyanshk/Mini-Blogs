@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[Forward KL vs Reverse KL](#reversekl)   
 [Message Brokers](#brokers)  
 [MapReduce](#mapreduce)  
 [Skewed workdloads in a KV store](#skew)  
@@ -39,6 +40,13 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name="reversekl"></a>Forward KL vs Reverse KL
+
+* Forward KL trains on the teacher's samples — the student is penalized for missing things the teacher does. It's "mean-seeking": the student tries to spread probability mass across everything the teacher might do, even if that means being mediocre across many modes.
+* Reverse KL trains on the student's samples — the student is penalized for doing things the teacher wouldn't. It's "mode-seeking": the student commits hard to imitating one strong behavior rather than hedging across many.
 
 ---
 
