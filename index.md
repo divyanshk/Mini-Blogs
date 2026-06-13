@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[Notification System Design](#notificationdesign)   
 [On-Policy Distillation](#opd)   
 [Forward KL vs Reverse KL](#reversekl)   
 [Message Brokers](#brokers)  
@@ -41,6 +42,18 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name="notificationsystem"></a>Notification System Design
+
+* On a high level there are 4 layers: 1) notification event creation / producers 2) Processing layer / consumers 3) priority/channel queues 4) notification dispatchers to the product layer
+    * Kakfa based queues sit between layer 1 and layer 2 ( part of ingestion)
+    * Layer 3 and 4 is post-processing and smart handling, product logic can go in there
+* Three entry paths converge into one shared pipeline: an express near-empty queue for OTP/2FA, partitioned event topics (Kafka) for triggered notifications, and a UTC time-store + scheduler for scheduled ones.
+* A processing layer (consumer group) runs once for all paths: checks user preferences, does fan-out, dedup, and rate-limiting, then renders content and emits one message per recipient.
+* Output splits by two axes — priority queues first (OTP beats marketing), then per-channel queues/dispatchers (push/SMS/email) — so a slow provider or a bulk campaign can't block critical traffic.
+* A status store tracks sent/delivered/failed and a dead-letter queue catches poison messages, with retries and backpressure throughout.
 
 ---
 
