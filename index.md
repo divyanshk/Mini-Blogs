@@ -2,6 +2,7 @@
 layout: default
 ---
 [Notification System Design](#notificationdesign)   
+[Tricky bits in a notification system](#notificationhardparts)   
 [On-Policy Distillation](#opd)   
 [Forward KL vs Reverse KL](#reversekl)   
 [Message Brokers](#brokers)  
@@ -42,6 +43,15 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name="notificationhardparts"></a>Tricy bits in a notification system
+
+* Fan-out — Problem: one comment.created for a popular post means notifying 50k+ followers; doing it in one consumer blocks a partition. Solution: two stages — stage 1 resolves the recipient list and emits N small notification.requested messages; stage 2 workers process them in parallel. Celebrities get chunked into batches, or switch to pull-on-read at extreme scale.
+* Replay / durability — Problem: consumers crash, providers go down, bugs mis-send for an hour. Solution: a log-based queue persists and replicates messages and retains them; consumers track an offset, so you reset the offset backwards to reprocess. (Traditional queues give retry but delete on ack, so no replay.) Buffering absorbs spikes via backpressure.
+* Thundering herd — Problem: a million "9am digest" sends fire at exactly 09:00:00 and overwhelm dispatchers and provider rate limits. Solution: store send_at in UTC (so "9am local" is one absolute time), then add jitter to spread sends across a window (09:00–09:15) for a steady drain rate.
+* Dedup — Problem: at-least-once delivery plus retries, scheduler restarts, and replay all risk double-sending. Solution: every notification carries an idempotency key; dedup at the dispatch boundary gives effectively-once from the user's view. (Never claim true exactly-once.)
 
 ---
 
