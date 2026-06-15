@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[Abstractions in storage](#storageabs)   
 [Notification System Design](#notificationsystem)   
 [Tricky bits in a notification system](#notificationhardparts)   
 [On-Policy Distillation](#opd)   
@@ -43,6 +44,16 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name="storageabs"></a>Abstractions in storage
+
+* Storage comes in three abstractions — block (raw disk you format yourself), file system (ready-to-use directory tree via POSIX), and object (flat key→value namespace via HTTP API). The big distinction between file and object is that file system is hierarchical and OS-mounted; object is flat, stateless, and always accessed through an API.
+* Network vs local is a separate axis from storage type. Block and file system can be either local or remote; object is always remote. Local NVMe block storage is the fastest option (~0.1 ms), network file system adds protocol overhead (~1–10 ms), and object storage is slowest because every operation is an HTTP round-trip (~10–100 ms).
+    * NFS maintains a persistent connection between your machine and the file server. When you read() a file, the kernel sends a binary RPC (Remote Procedure Call) directly over TCP/IP to the NFS server. It's a thin, purpose-built protocol with minimal overhead.
+    * For object storage (eg S3), every single operation is a full HTTP request. There are HTTP headers, request sent to a load balancer, persmissions, data retrieved and streamed back as an HTTP response, etc. It can't beat NFS.
+* NVMe is disk, not RAM — but fast disk. It uses flash chips (no moving parts) over a PCIe bus (not the bottlenecked SATA interface), which is why it feels RAM-like. The key difference: RAM is ~1000× faster but volatile (forgets on power loss); NVMe is persistent. It sits in a unique sweet spot — the fastest durable storage that exists.
 
 ---
 
