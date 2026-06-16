@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[BPC](#bpc)   
 [Abstractions in storage](#storageabs)   
 [Notification System Design](#notificationsystem)   
 [Tricky bits in a notification system](#notificationhardparts)   
@@ -44,6 +45,13 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name="bpc"></a>BPC Scoring
+
+* The Core Definition: Bits Per Character (BPC) evaluates character-level language models by measuring their average uncertainty (in base-2 bits) when predicting the next character in a text sequence, where lower scores mean better text understanding and predictability.
+* The Loss-to-Bits Mapping: In information theory, there is a fundamental rule: the more predictable an event is, the fewer bits you need to communicate it. Because standard cross-entropy loss ($\ln$) and bit-encoding ($\log_2$) both mathematically compute a character's negative log-probability, a model's loss in "nats" is directly proportional to the physical bits needed to encode that character—specifically, multiplying cross-entropy loss by $\approx 1.44$ yields the exact BPC score.
 
 ---
 
