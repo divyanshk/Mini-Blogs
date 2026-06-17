@@ -55,7 +55,7 @@ layout: default
 ## <a name='tokenizer'></a>Tokenizers
 
 * Writing a text tokenizer means building and applying a vocabulary via an algorithm like BPE — normalize, pre-tokenize, merge, encode to IDs. 
-* "Tokenizing" an image means imposing sequence structure on a pixel grid, either by slicing it into patches and linearly projecting them into continuous embeddings (ViT, the common case), or by encoding it and quantizing to discrete codebook indices (VQ-VAE, when you need true discrete tokens for generation). 
+* "Tokenizing" an image means imposing sequence structure on a pixel grid, either by slicing it into patches and linearly projecting them into continuous embeddings (ViT, the common case), or by encoding it and quantizing to discrete codebook indices (VQ-VAE, when you need true discrete tokens for generation - typically for 'image-as-language models' those working on images autoregressively; diffusion models are in the ViT bucket). 
 * Text tokens come from frequency statistics over a corpus; image tokens come from learned projections or learned codebooks.
 
 ---
