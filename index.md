@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[Inference Pipeline](#inference)   
 [Tokenizers](#tokenizer)   
 [QKV Breakdown](#qkv)   
 [Transformer's Components](#transformer)   
@@ -49,6 +50,46 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+## <a name='inference'></a>Inference pipeline
+
+* Prefill – this is the first stage, when the model reads the entire prompt and builds understanding of the context. Since all prompt tokens are already known, this step can be heavily parallelized and runs very fast on the GPU. 
+    * Prefill produces the first output token and populates the KV cache.
+* Decode – the model generates the response one token at a time. Each new token depends on the previous ones, so this stage is mostly sequential and slower.
+    * Each step is a forward pass that processes only one new token — but to do so it must read all the model weights and the entire KV cache from memory. The amount of math per step is tiny relative to the amount of data moved. This phase is memory-bandwidth-bound: the bottleneck is how fast you can stream weights and cache out of GPU memory, not how fast the GPU can multiply.
+* Metrics (tail latencies matter more than averages): 
+    * TTFT: mostly prefill latency,
+    * TPOT: mostly decode latency. So, total latency is approximately: TTFT + (TPOT × number of output tokens).
+    * End-to-end latency
+    * Throughput
+    * Goodput: throughput of requests that met their latency SLO
+* Prefill requires more compute, while decode is memory-bandwidth-bound.
+* First we do tokenization and creation of token embeddings (RoPE fits in here). Then comes attention (first as prefill then later in decode as well).
+* During attention, each token computes a query (Q), key (K), and value (V) vector, and attends to the keys and values of all previous tokens. Without caching, generating token N would mean recomputing the K and V for all N−1 prior tokens at every step — quadratic, wasteful work.
+    * Instead we cache the K and V tensors for every token already seen, in every layer.
+    * Q vectors are always ephemeral; only K and V are ever cached
+* The cost is memory. The KV cache size is roughly:
+    * kv_bytes ≈ 2 × n_layers × seq_len × n_kv_heads × head_dim × dtype_bytes × batch_size
+    * The 2 is for K and V. This grows linearly with both sequence length and batch size, and it lives in scarce GPU memory alongside the model weights.
+* The KV cache, not the weights, usually limits how many concurrent requests fit on a GPU.
+* Anything that shrinks it pays off directly. Grouped-Query Attention (GQA) and Multi-Query Attention (MQA) let multiple query heads share fewer K/V heads, cutting n_kv_heads and shrinking the cache several-fold — which is why nearly all modern serving models use them.
+* Long contexts are expensive in memory, not just compute. A single 100K-token conversation can consume gigabytes of KV cache.
+* Batching
+    * Static: Collect N requests, run them together until all finish.
+    * Dynamic: Wait a few milliseconds to gather whatever requests arrive, then run that batch
+        * Both suffer from “wait for the slowest" problem for variable-length generation.
+    * Continuous (aka in flight batching): see ss. Every empty slot if filled with another request
+    * <img src="dynamic_batching.png" alt="dynamic batching" width="500">
+    * "Batch size" stops being a fixed number you configure and becomes "however many sequences happened to be in this step,
+    * There is chunked prefill to remedy some kinks that arrive with this setup.
+* For memory management, look at PagedAttention and prefix caching.
+* More optimizations: quantization, speculative decoding, chunked prefill, prefill–decode disaggregation, FlashAttention.
+* Routing starts playing a big role in KV cache efficiency.
+* The fundamental trade-off restated in metrics terms: bigger batches → higher throughput but worse per-request latency^^
+    * Your SLO defines how far you can push.
+    * The goal is to track demand closely enough to hold your latency SLO without paying for idle GPUs you don't need.
+    * ^^ conditions apply: this depends on many factors and may not be true all the time. A lot depends on how requests are scheduler and how ‘smart’ is the scheduler
 
 ---
 
