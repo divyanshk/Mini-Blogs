@@ -2,6 +2,7 @@
 layout: default
 ---
 [Transformer's Components](#transformer)   
+[Transformer's Supporting Concepts](#transformer2)   
 [BPC](#bpc)   
 [Abstractions in storage](#storageabs)   
 [Notification System Design](#notificationsystem)   
@@ -57,6 +58,14 @@ layout: default
 * Transformer encoder layers — the core of the architecture, stacked on top of each other. Each layer runs multi-head self-attention: every token looks at every other token and updates its own representation based on what it sees. Multiple attention heads run in parallel, each learning to track a different type of relationship. After several layers, each token's vector has been deeply enriched with context from the whole sentence. Early layers tend to learn syntax, later layers learn semantics.
 * Mean pooling — after the encoder, you have one vector per token. To classify the whole sentence you need one vector, so you average all the token vectors together. This collapses (seq_len, 128) → (128,), a single summary of the sentence's meaning.
 * Linear classifier — takes that 128-dim summary vector and maps it to N scores, one per class. The highest score is the prediction.
+
+---
+
+## <a name="transformer2>Transformer's Supporting Concepts
+
+* Padding — real-world sentences have different lengths but GPUs need rectangular grids. Shorter sequences get padded with a dummy token to match the longest in the batch. A padding mask is passed alongside the input so the attention mechanism knows to ignore those positions completely.
+* Multi-head attention — instead of one attention pass, you run nhead passes in parallel, each with independent weights. Each head specializes in a different kind of relationship. Results are concatenated and projected back to the original size. The constraint: d_model must divide evenly by nhead, since the vector gets split equally across heads.
+* Encoder vs decoder — an encoder reads the whole input simultaneously in both directions, building a rich understanding of existing text. It's best for classification, search, named entity recognition, and question answering. A decoder generates new text one token at a time, only looking backwards — that's what models like GPT and Claude use. Encoder-only models like BERT dominated NLP benchmarks for years without ever generating a single word.
 
 ---
 
