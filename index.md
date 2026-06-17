@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[QKV Breakdown](#qkv)   
 [Transformer's Components](#transformer)   
 [Transformer's Supporting Concepts](#transformer2)   
 [BPC](#bpc)   
@@ -50,7 +51,29 @@ layout: default
 
 ---
 
-## <a name="transformer>Transformer's Components
+## <a name="qkv"></a>QKV Breakdown
+
+* Self-attention allows tokens in a sequence to dynamically route context to one another. Every token is projected into three vectors:
+    * Query ($Q$): What a token is searching for (the "search string").
+    * Key ($K$): What a token contains (the "index/tags" used for matching).
+    * Value ($V$): The actual semantic content passed along once a match is made.
+* $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
+
+<small>
+* Step-by-Step Mathematical Workflow
+    * Similarity Scores ($QK^T$): The Query matrix multiplies with the transposed Key matrix. This creates an $(N \times N)$ matrix of dot products representing how much every token cares about every other token.
+    * Scaling ($\div \sqrt{d_k}$): The raw scores are divided by the square root of the key dimension. This prevents extreme values and stabilizes gradients during training.
+    * Normalization ($\text{softmax}$): A row-wise softmax converts the scaled scores into a clean probability distribution where each row sums to $1.0$ ($100\%$).
+    * Information Routing ($\times V$): The probability matrix multiplies the Value matrix. The final output for each token is a weighted sum of all values in the sentence, baked full of context.
+</small>
+
+* K and Q decide "how" we are looking at other tokens, and V decides "what" it is for every token
+    * $Q$ and $K$ form the "Routing Layer": They determine how much the model should look at every other token. It is purely about calculating the relationships, syntax, and relevance.
+    * $V$ is the "Information Layer": It holds the actual semantic meaning—the what—that gets moved across the network once those relationships are established.
+
+---
+
+## <a name="transformer></a>Transformer's Components
 
 * Tokenizer: Splits raw text into chunks (tokens) and maps each one to an integer ID using a fixed vocabulary.
 * Token Embeddings: the model's first layer. Swaps each integer ID for a 128-dimensional vector of floats. These vectors are learned
@@ -61,7 +84,7 @@ layout: default
 
 ---
 
-## <a name="transformer2>Transformer's Supporting Concepts
+## <a name="transformer2></a>Transformer's Supporting Concepts
 
 * Padding — real-world sentences have different lengths but GPUs need rectangular grids. Shorter sequences get padded with a dummy token to match the longest in the batch. A padding mask is passed alongside the input so the attention mechanism knows to ignore those positions completely.
 * Multi-head attention — instead of one attention pass, you run nhead passes in parallel, each with independent weights. Each head specializes in a different kind of relationship. Results are concatenated and projected back to the original size. The constraint: d_model must divide evenly by nhead, since the vector gets split equally across heads.
