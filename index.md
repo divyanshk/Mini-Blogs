@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[Transformer's Components](#transformer)   
 [BPC](#bpc)   
 [Abstractions in storage](#storageabs)   
 [Notification System Design](#notificationsystem)   
@@ -45,6 +46,17 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name="transformer>Transformer's Components
+
+* Tokenizer: Splits raw text into chunks (tokens) and maps each one to an integer ID using a fixed vocabulary.
+* Token Embeddings: the model's first layer. Swaps each integer ID for a 128-dimensional vector of floats. These vectors are learned
+* Positional Embeddings:  added on top of the word embeddings; inject the order by giving each position its own learned vector. Now each token carries both what it is and where it sits.
+* Transformer encoder layers — the core of the architecture, stacked on top of each other. Each layer runs multi-head self-attention: every token looks at every other token and updates its own representation based on what it sees. Multiple attention heads run in parallel, each learning to track a different type of relationship. After several layers, each token's vector has been deeply enriched with context from the whole sentence. Early layers tend to learn syntax, later layers learn semantics.
+* Mean pooling — after the encoder, you have one vector per token. To classify the whole sentence you need one vector, so you average all the token vectors together. This collapses (seq_len, 128) → (128,), a single summary of the sentence's meaning.
+* Linear classifier — takes that 128-dim summary vector and maps it to N scores, one per class. The highest score is the prediction.
 
 ---
 
