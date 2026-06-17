@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[Tokenizers](#tokenizer)   
 [QKV Breakdown](#qkv)   
 [Transformer's Components](#transformer)   
 [Transformer's Supporting Concepts](#transformer2)   
@@ -48,6 +49,14 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name='tokenizer'></a>Tokenizers
+
+* Writing a text tokenizer means building and applying a vocabulary via an algorithm like BPE — normalize, pre-tokenize, merge, encode to IDs. 
+* "Tokenizing" an image means imposing sequence structure on a pixel grid, either by slicing it into patches and linearly projecting them into continuous embeddings (ViT, the common case), or by encoding it and quantizing to discrete codebook indices (VQ-VAE, when you need true discrete tokens for generation). 
+* Text tokens come from frequency statistics over a corpus; image tokens come from learned projections or learned codebooks.
 
 ---
 
