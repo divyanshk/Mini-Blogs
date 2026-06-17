@@ -59,13 +59,16 @@ layout: default
     * Value ($V$): The actual semantic content passed along once a match is made.
 * $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
 
-<small>
+<small><small>
+
 * Step-by-Step Mathematical Workflow
     * Similarity Scores ($QK^T$): The Query matrix multiplies with the transposed Key matrix. This creates an $(N \times N)$ matrix of dot products representing how much every token cares about every other token.
     * Scaling ($\div \sqrt{d_k}$): The raw scores are divided by the square root of the key dimension. This prevents extreme values and stabilizes gradients during training.
     * Normalization ($\text{softmax}$): A row-wise softmax converts the scaled scores into a clean probability distribution where each row sums to $1.0$ ($100\%$).
     * Information Routing ($\times V$): The probability matrix multiplies the Value matrix. The final output for each token is a weighted sum of all values in the sentence, baked full of context.
-</small>
+
+</small></small>
+
 
 * K and Q decide "how" we are looking at other tokens, and V decides "what" it is for every token
     * $Q$ and $K$ form the "Routing Layer": They determine how much the model should look at every other token. It is purely about calculating the relationships, syntax, and relevance.
