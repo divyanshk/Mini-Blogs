@@ -237,7 +237,7 @@ layout: default
 
 ---
 
-## <a name="mapreduce></a>MapReduce
+## <a name="mapreduce"></a>MapReduce
 * MapReduce is a programming model for processing large datasets in parallel across a distributed cluster.
 * Map → Shuffle → Reduce: Input data is split into chunks, a map function processes each chunk into key-value pairs, those pairs are shuffled/sorted by key, then a reduce function aggregates them into a final result (e.g., counting word frequencies across millions of documents).
 * Fault-tolerant but batch-oriented: It handles node failures gracefully by re-running failed tasks, but it writes intermediate results to disk between stages — making it slow and ill-suited for iterative algorithms or anything requiring low latency.
