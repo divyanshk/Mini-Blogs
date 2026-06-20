@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[Data storage + streaming](#datastreaming)   
 [Lucene in Search](#lucene)   
 [Cross-Attention](#crossattn)   
 [Inference Pipeline](#inference)   
@@ -53,6 +54,21 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name='datastreaming'></a>Data storage + streaming
+
+* Two main points to consider for data infra supporting AI workloads: massive volume, heterogenous shape and sizes
+* Typically data sets are sharded optimized for sequential reads.
+* Different data formats exist, such as webdataset, MDS Parquet, Lance, or LeRebot for robotics. There is no one-size-fits-all. Each format comes with its own advantages or limitations.
+    * Format choice is a function of the axis patterns, the storage constraints, and the pipeline mechanics (that is, Workflow is compute bound or data bound. It's happening off-line or online).
+    * Data format axis for consideration: A. Metadata B. Row vs columnar C. compression D. encryption E. readheavy or writeheavy optimized, F. sharding implementation 
+* Start shuffling at large scale look like? Typically, you shuffle shards and have a shuffle buffer of size N to read from. Optimize these based on your compute/storage/CPU etc.
+* On Batching:
+    * Variable length sequences: Sequence packing, Token budget batching (aim to fill a certain tokem amount in the batch, rather than a fixed number of samples)
+        * With this optimization the way you compute the loss has to change as well. You shouldn't average the loss based on the number of roles or samples in the batch, but based on tokens (for token budget batching).
+        * For sequence packing, don't forget masking to prevent attention from looking over sequence boundaries.
 
 ---
 
