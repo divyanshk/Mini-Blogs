@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[Deduping large data points](#dedup)   
 [Data Ingestion Systems](#dataingestion)   
 [Data storage + streaming](#datastreaming)   
 [Lucene in Search](#lucene)   
@@ -55,6 +56,15 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name='dedup'></a>Deduping large data points
+
+* It's feasible and routine — but not naive Lloyd's over all billion points; you use FAISS (GPU-accelerated, built for billion-scale) rather than something like scikit-learn.
+* Fitting scales with K, not N — you train the centroids on a sample sized to the number of clusters (~30–256 points per centroid), so a few million points suffices even for large corpora; only the final assignment pass touches all billion, and that's a single parallel streaming job.
+* Standard accelerants make it cheap — mini-batch updates, PCA/random-projection down from 512–1024 dims, and PQ compression (~64 bytes/vector, so a billion fit in ~64 GB RAM instead of ~2 TB).
+* For dedup you only need coarse clustering — its job is just to bucket likely-duplicates together (it's essentially the coarse quantizer of a FAISS IVF index), so approximate is fine; the one tradeoff is boundary misses, fixed by multi-probing each point's nearest few clusters.
 
 ---
 
