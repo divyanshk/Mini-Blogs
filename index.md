@@ -1,6 +1,8 @@
 ---
 layout: default
 ---
+[Lucene in Search](#lucene)   
+[Cross-Attention](#crossattn)   
 [Inference Pipeline](#inference)   
 [Tokenizers](#tokenizer)   
 [QKV Breakdown](#qkv)   
@@ -52,6 +54,31 @@ layout: default
 [Async SGD, Hogwild](#asyncsgd)    
 
 ---
+
+## <a name='lucene'></a>Lucene in Search
+
+* It maintains the specialized retrieval structures a KV store can't: an inverted index (term → ranked posting lists) for full-text, plus doc values for facets, BKD trees for range filters, and HNSW for vector search — all in one engine.
+* Its analysis pipeline (tokenizing, lowercasing, stemming, synonyms, n-grams) is what turns "exact title match" from brittle into robust, giving you typo tolerance and partial matching.
+* It scores candidates by relevance (BM25 - similar to TF-IDF) at retrieval time, so you get a strong first ranking signal for free before any ML ranker runs.
+* It's the actual engine under Elasticsearch/OpenSearch/Solr — understanding it means you understand what every layer above is really doing.
+    * ElasticSearch sits on top of Lucene. It shards indexes across multiple nodes and machines to handle massive datasets; fault tolerance; cluster management, basically everything to manage your storage engine without working directly with Lucene.
+
+---
+
+## <a name='crossattention'></a>Cross Attention
+
+* Bridge between modalities — Cross-attention lets one modality (e.g. text) query another (e.g. image) using Q from one and K, V from the other, so information flows across without forcing both into the same representation space.
+* Flexible fusion — The model learns which parts of one modality are relevant to which parts of another (e.g. the word "dog" attends to the dog region in the image), making it dynamic and content-dependent rather than a fixed merge.
+    * During cross-attention, for each text token the model computes a score against every image patch.
+    * The model is trained on millions of image-caption pairs with a loss like:
+        * Captioning loss — predict the next word given the image; to predict "dog" correctly, the model must find the dog in the image patches
+        * Contrastive loss (CLIP-style) — pull together matching image-text pairs globally
+    * Through backpropagation, the Q and K projection matrices adjust so that semantically related concepts develop similar vector directions 
+    * i.e. We don't explicitly ensure it — the model learns it from data. This happens because of large scale training, lots of data, good loss function design and gradient descent 
+* Keeps encoders decoupled — Each modality can be encoded independently (even with frozen pretrained encoders), and cross-attention acts as the learned bridge — enabling efficient architectures like Flamingo where only the cross-attention weights are trained.
+
+---
+
 ## <a name='inference'></a>Inference pipeline
 
 * Prefill – this is the first stage, when the model reads the entire prompt and builds understanding of the context. Since all prompt tokens are already known, this step can be heavily parallelized and runs very fast on the GPU. 
