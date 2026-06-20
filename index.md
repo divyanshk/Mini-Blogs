@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[Data Ingestion Systems](#dataingestion)   
 [Data storage + streaming](#datastreaming)   
 [Lucene in Search](#lucene)   
 [Cross-Attention](#crossattn)   
@@ -54,6 +55,28 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name='dataingestion'></a>Data Ingestion Systems
+
+* Think of it as a DAG: ingest → normalize → chunk/process → embed → index → serve, with quality and curation layered throughout.
+* Content-addressed storage (hash → blob) gives free exact deduplication and idempotency. Object storage is the source of truth; a metadata catalog indexes it. Metadata can be used for all sorts of purposes, until you need the blobs themselves.
+* Metadata extraction: resolution, codec, duration, fps, source, timestamps.
+* Format normalization: data inputs can be in variable formats. You need a uniform yet broad formats to encode cleanly as well as do it efficiently and as lossless-ly as possible.
+* Processing / chunking — choosing the unit of embedding. A central decision is what gets embedded, across different modalities (audio, episodes, image, video).
+* Embedding generation at scale: CLIP (and its variants), CLAP/wav2vec for audio, text embedders for captions/transcripts. A shared/joint embedding space is the thing that makes cross-modal search work.
+    * It's a throughput problem. Embedding billions of items is a distributed, fault-tolerant batch job.
+    * Incremental and idempotent: only embed new or changed content.
+    * Embedding-model versioning: when you upgrade your encoder, every old vector is in a different space and incomparable. 
+* Storage and indexing: Vector / ANN index; The index trade-off triangle is recall vs latency vs memory, with quantization of vectors as the lever for scale.
+    * Hybrid search: combine vector similarity with metadata filters
+    * Sharding, replication, and freshness — how quickly newly ingested content becomes searchable.
+*  Quality and curation
+    * Dedup: exact via hashing, near-duplicate via perceptual hashing or embedding similarity.
+    * Filtering: NSFW removal, quality and aesthetic scoring, CLIP-score filtering for image-text alignment.
+    * Decontamination: dedup training data against eval sets so benchmarks aren't leaked.
+    * Synthetic annotation: use a VLM to caption or label media — closing the flywheel by generating training signal.
 
 ---
 
