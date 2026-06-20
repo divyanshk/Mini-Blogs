@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[checkpointing](#checkpointing)   
 [Deduping large data points](#dedup)   
 [Data Ingestion Systems](#dataingestion)   
 [Data storage + streaming](#datastreaming)   
@@ -56,6 +57,16 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name='checkpointing'><a>Checkpointing
+
+* Optimizer a state is significantly more than weights. It takes up majority of the size of the distributor checkpoint.
+    *  Weights are 2 bytes/param in bf16, but Adam adds ~12 (fp32 master + two moments in fp32 each), so a checkpoint is ~14 bytes/param — a 70B model is ~1 TB. Basically models train in fp16, but optimizer is in full precision for stable updates.
+* Tiered checkpointing: Use fast local storage like NVME for frequent check pointing; For more durable checkpoints that are less frequent hit the storage.
+* Async checkpointing: do the expensive D2H, then continue with the job in the background process move the checkpoints from the CPU to the storage.
+* Checkpoint using a resharding / topology-agnostic format for easlier restarts (After some processing) on node failures or changed model configurations.
 
 ---
 
