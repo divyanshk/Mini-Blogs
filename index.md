@@ -19,6 +19,7 @@ layout: default
 [Skewed workdloads in a KV store](#skew)  
 [Partitioning](#sharding)   
 [Change Data Capture](#cdc)   
+[Change Data Capture in Search](#cdcsearch)   
 [Reliability in Data Systems](#reliability)   
 [Scaling up vs Scaling out](#scaling)   
 [OLTP vs OLAP](#olap)  
@@ -281,6 +282,19 @@ layout: default
 * Replication keeps identical copies of your database in sync (MySQL → MySQL); CDC turns every database change into an event stream that any system can consume — Elasticsearch, Redis, a data warehouse, all at once.
 * Replication is tightly coupled — a lagging replica affects failover decisions and read freshness; CDC consumers are independent, each processing the stream at their own pace without affecting the source or each other.
 * Replication is infrastructure-level plumbing you mostly don't see; CDC is an explicit, queryable audit log of every insert, update, and delete — a first-class artifact you can replay, rewind, or route to new consumers added later.
+* See CDC in Search for more details.
+
+--- 
+
+## <a name="cdcsearch"></a>Change Data Capture in Search
+
+* High-level: DB -> CDC connector -> Kafka → Consumer/Indexer -> ES 
+* CDC reads the DB's own write-ahead log (WAL/binlog), so every insert/update/delete is captured reliably in commit order — avoiding the dual-write divergence and the missed-deletes problem of polling.
+* Kafka decouples the two systems (ES being down just backs up the queue, nothing is lost) and is a replayable, ordered log — which is exactly what makes full reindexes and new indexes cheap.
+* The consumer/indexer is where enrichment lives — embeddings, LLM bucketing, denormalization — kept off the query path, then bulk-upserted with whatver id and external versioning for idempotent, in-order writes.
+* It keeps ES as rebuildable derived state with the DB as source of truth, at seconds-level freshness (consumer lag is your staleness metric); if the SLA is days, drop it for a nightly batch rebuild instead.
+* Meta point:
+    * The unifying principle: whenever you have one source of truth and N derived systems that each need the same data in a different shape, kept fresh, without dual writes, this pattern fits. Martin Kleppmann calls it "turning the database inside out" — the change log becomes the integration point for your whole architecture, and each consumer is just a different projection of it. Search, cache, warehouse, and event bus are all the same move.
 
 --- 
 
@@ -319,7 +333,7 @@ layout: default
 
 ---
 
-## <a name="scaling"</a>Scaling up vs Scaling out 
+## <a name="scaling"></a>Scaling up vs Scaling out 
 
 * Scale up means giving one machine more power — bigger CPU, more RAM, faster disk. It's conceptually simple: your software doesn't change, you just buy better hardware. The problems are stark though. That machine is a single point of failure — when it goes down, everything goes down. You also hit a hard ceiling: there's a maximum size server you can buy, and as you approach it, the cost curve bends sharply upward.
 * Scale out means adding more machines and spreading the load across them. The load balancer routes traffic, and any individual node is expendable. Lose one server and the others absorb its share — this is the foundation of real fault tolerance. There's no practical upper bound to capacity; you just add more nodes.
