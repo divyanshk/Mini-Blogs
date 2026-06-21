@@ -1,7 +1,7 @@
 ---
 layout: default
 ---
-[checkpointing](#checkpointing)   
+[Checkpointing](#checkpointing)   
 [Deduping large data points](#dedup)   
 [Data Ingestion Systems](#dataingestion)   
 [Data storage + streaming](#datastreaming)   
@@ -60,7 +60,7 @@ layout: default
 
 ---
 
-## <a name='checkpointing'><a>Checkpointing
+## <a name='checkpointing'></a>Checkpointing
 
 * Optimizer a state is significantly more than weights. It takes up majority of the size of the distributor checkpoint.
     *  Weights are 2 bytes/param in bf16, but Adam adds ~12 (fp32 master + two moments in fp32 each), so a checkpoint is ~14 bytes/param — a 70B model is ~1 TB. Basically models train in fp16, but optimizer is in full precision for stable updates.
