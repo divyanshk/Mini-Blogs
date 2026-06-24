@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[Kafka Core Components](#Kafka)   
 [Like Counter](#likecounter)   
 [Checkpointing](#checkpointing)   
 [Deduping large data points](#dedup)   
@@ -58,6 +59,14 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name='kafka'></a>Kafka Core Components
+
+* Producers & Consumers (The Clients): Producers create and publish real-time event messages to specific categories, while Consumers subscribe to and read those messages, often processing them in parallel using Consumer Groups.
+* Topics & Partitions (The Storage Structure): Events are organized into Topics, which are broken down into Partitions across multiple servers. Partitions strictly order messages by time using a unique sequential ID called an Offset.
+* Brokers & Clusters (The Infrastructure): A Broker is a single Kafka server that persists data to disk and serves clients, while a group of brokers forms a Cluster that coordinates data replication and leadership for high availability and fault tolerance.
 
 ---
 
