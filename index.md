@@ -67,6 +67,10 @@ layout: default
 * Producers & Consumers (The Clients): Producers create and publish real-time event messages to specific categories, while Consumers subscribe to and read those messages, often processing them in parallel using Consumer Groups.
 * Topics & Partitions (The Storage Structure): Events are organized into Topics, which are broken down into Partitions across multiple servers. Partitions strictly order messages by time using a unique sequential ID called an Offset.
 * Brokers & Clusters (The Infrastructure): A Broker is a single Kafka server that persists data to disk and serves clients, while a group of brokers forms a Cluster that coordinates data replication and leadership for high availability and fault tolerance.
+* Kafka Streams is a lightweight, client-side data processing library that sits directly on top of Kafka.
+    * If Kafka brokers act as the filesystem or database that stores streams of data, Kafka Streams is the application logic that processes, transforms, and reacts to that data in real time.
+    * Kafka Streams fits in as the compute layer. It allows you to write high-level code to look at data flowing through Kafka and instantly do things like: Transform, Filer, Aggregate, Join.
+    * It is a Library, Not a Framework. You simply import the library into your standard application code. It inherits all of Kafka's parallelism and fault-tolerance out of the box.
 
 ---
 
