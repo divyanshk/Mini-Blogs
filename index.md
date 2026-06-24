@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[Like Counter](#likecounter)   
 [Checkpointing](#checkpointing)   
 [Deduping large data points](#dedup)   
 [Data Ingestion Systems](#dataingestion)   
@@ -57,6 +58,32 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name='likecounter'></a>Like Counter
+
+Here's the whole thing, walking the data flow, with the reason each piece earns its place.
+
+**Client (optimistic UI).** Paints the +1 the instant you tap, before the backend confirms. It's there so the like *feels* instant and the user experience is decoupled from write latency and durability.
+
+**Write API.** Thin layer that validates the request, enforces the no-double-like rule, and appends the like as an event. It exists to be a fast, dumb front door — it does no aggregation, so it never becomes a bottleneck.
+
+**Event log (Kafka).** The commit point and single source of truth: durable, ordered, replayable, buffered for a retention window. Everything downstream is a derived view that can be rebuilt by replaying it — which is what makes buffering and async processing safe instead of lossy.
+
+**Membership store (the relationship: "U liked P").** The set of who-liked-what. It's here to enforce idempotency and no-double-likes, to enable unlike, and to be the ground truth that reconciliation recomputes counts from. This is the "relationship" half of the relationship-vs-aggregate split.
+
+**Stream aggregator.** Consumes the log, windows likes into a single batched `+delta`, and writes membership rows plus flushed counts. Its whole job is to collapse N individual likes into one durable write and absorb traffic spikes, so the durable store sees a trickle instead of a flood.
+
+**Durable store (Cassandra/DynamoDB).** Holds the *materialized count* — one integer per post — alongside membership. It's the authoritative aggregate, and because the count is pre-materialized, fetching it is an O(1) key lookup rather than a `COUNT(*)` scan, which is what makes a cache miss cheap.
+
+**Redis counter.** Two jobs: cache-aside for the ~99.9% of posts that are cold (evictable copy of the durable count), and a sharded atomic write-buffer for the ~0.1% that are viral (`INCR` so the number ticks up live without hammering the durable store). It's there to serve the read-heavy common case fast and to absorb hot-key write contention — not to mirror the durable store.
+
+**Reconciliation job.** Periodically recomputes the true count from membership/log and corrects Redis. It exists to heal the drift that the fast, blind-increment path accumulates, turning "fast but slightly wrong" into "eventually exact."
+
+**Hive / warehouse.** Offline analytics sink, fed by dumping the log. It's deliberately at the *end* of the pipe — HDFS-backed batch storage is right for trend analysis and wrong for serving, so it's kept off the hot path entirely.
+
+The reason these fit together rather than just coexisting comes down to four decisions: split the **relationship from the aggregate** (different access patterns, different stores); accept **approximate, eventually-consistent** counts (the choice that unlocks caching, async updates, and sharding); **commit to the log first** so buffering can't lose data; and make increments **idempotent via membership plus reconciliation** so retries and crashes don't corrupt the number. Each component above is just one of those four decisions made concrete.
 
 ---
 
