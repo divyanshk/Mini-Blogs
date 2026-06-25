@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[K8s and Slurm](#k8)   
 [Kafka Core Components](#Kafka)   
 [Like Counter](#likecounter)   
 [Checkpointing](#checkpointing)   
@@ -59,6 +60,15 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name='k8'></a>K* and Slurm
+
+* Kubernetes: The open-source rules and software for managing containers.
+* GKE: Google's cloud service that runs Kubernetes for you, so you don't have to manage the underlying servers.
+* Slurm: The alternative system you use instead of K8s/GKE when you aren't running web apps, but are instead launching massive, supercomputer-sized computational workloads (like AI training jobs).
+* GKE/AKS/EKS: Google's, Azure's and Amazon's Kubernates Enginer respectively.
 
 ---
 
