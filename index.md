@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[Lambda Data Processing](#lambda)   
 [K8s and Slurm](#k8)   
 [Kafka Core Components](#Kafka)   
 [Like Counter](#likecounter)   
@@ -60,6 +61,19 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name='lambda'></a>Lambda Data Processing
+
+* Two tiers, one timeline: A batch job (Spark, nightly) computes feature values over long windows `[T-90d, T_batch]` as the "base"; a streaming job (Flink, continuous) computes the "delta" over `[T_batch, now]`. At serving time, `final = merge(base, delta)`.
+
+* Two storage systems: Both tiers dual-write to an online store (Redis/DynamoDB) for low-latency serving reads and an offline store (S3/Parquet) for training scans and point-in-time joins.
+
+* Merge logic depends on feature type: Additive features are `base + delta`; ratios need separate numerator/denominator; time-decayed features apply decay at read; sketches use mergeable structures; latest-value features just overwrite.
+
+* Why batch stays in the picture: Even though streaming could "cover everything," batch provides bounded state, cheap reprocessing on bug fixes, correct handling of late-arriving data, and a correctness backstop — while streaming provides the freshness layer on top.
+
 
 ---
 
