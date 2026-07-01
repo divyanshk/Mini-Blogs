@@ -73,6 +73,8 @@ layout: default
 * While mmap maximizes performance for sequential or localized access by eliminating system call overhead and enabling effortless memory sharing, it can severely degrade performance during random access by triggering expensive page faults and forcing the OS to read entire 4KB pages for tiny, arbitrary data reads.
     * This is "Page Table Overhead & Thrashing" (former) and "IO Amplification" (later).
 * Choose mmap if your data access exhibits strong spatial locality or requires multi-process sharing; choose traditional I/O with custom user-space caching if your access patterns are purely random across a file larger than physical RAM.
+* You can mmap and still not be doing lazy loading. 
+    * Zero-Copy Speed: By using mmap, we can bypass the overhead of copying data from a traditional kernel file buffer into a user-space Python buffer. The data goes directly from the disk cache straight into your tensor storage structures, drastically shortening your overall loadup time.
 
 ---
 
