@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[Memory Mapping](#mmap)   
 [Lambda Data Processing](#lambda)   
 [K8s and Slurm](#k8)   
 [Kafka Core Components](#Kafka)   
@@ -61,6 +62,17 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name='mmap'></a>Memory Mapping
+
+* Memory mapping (mmap) links a file directly to a process's virtual address space instead of copying it into user buffers. The OS then uses page tables and hardware page faults to lazily load fixed-size blocks (pages) into RAM only when your program tries to access them.
+    * Instead of user buffers to get data between kernel and user space boundaries, we use the process's virtual address memory space. The CPU handles the actual fetching from the disk into the virtual address space behind the scenes via page faults.
+    * We can share the mmap-ed file between different processes.
+* While mmap maximizes performance for sequential or localized access by eliminating system call overhead and enabling effortless memory sharing, it can severely degrade performance during random access by triggering expensive page faults and forcing the OS to read entire 4KB pages for tiny, arbitrary data reads.
+    * This is "Page Table Overhead & Thrashing" (former) and "IO Amplification" (later).
+* Choose mmap if your data access exhibits strong spatial locality or requires multi-process sharing; choose traditional I/O with custom user-space caching if your access patterns are purely random across a file larger than physical RAM.
 
 ---
 
