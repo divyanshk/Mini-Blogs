@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[Quantization](#quantization)   
 [Memory Mapping](#mmap)   
 [Lambda Data Processing](#lambda)   
 [K8s and Slurm](#k8)   
@@ -62,6 +63,14 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name='quantization'></a>Quantization
+
+* High-Precision Accumulation (Accuracy): Core math operations (like matrix multiplication) are done or accumulated in a larger precision (e.g., INT32 or FP32) before being quantized back down, which prevents catastrophic data overflow and preserves model accuracy.
+* On-the-Fly Unpacking (Memory Efficiency): To save VRAM, the data is stored and transferred entirely in low precision; it is only momentarily unpacked into full precision inside the processor's tiny registers during the calculation, keeping the memory footprint minimal.
+* You cannot really do torch operations in FP8, there are hardware limitations. Modern AI accelerators (like NVIDIA Hopper or Blackwell GPUs) do not have hardware instructions to perform standard element-wise math directly on 8-bit floats. They are hardwired to use FP8 almost exclusively for massive matrix multiplication engines (Tensor Cores).
 
 ---
 
