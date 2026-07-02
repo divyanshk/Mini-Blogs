@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[Memory Pointer Chasing](#chasing)   
 [Quantization](#quantization)   
 [Memory Mapping](#mmap)   
 [Lambda Data Processing](#lambda)   
@@ -63,6 +64,15 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name='chasing'></a>Memory Pointer Chasing
+
+* The Mechanism: Pointer chasing happens when data is non-contiguous (like linked lists, graphs, or sparse matrices), meaning the address of the next data item is stored inside the current one.
+* The Bottleneck: It forces serialization; the GPU cannot prefetch data or utilize its massive parallel bus because it must wait hundreds of clock cycles for one request to return before it even knows where to look next.
+* Latency vs. Bandwidth: It is strictly memory-latency bound (restricted by round-trip flight time) rather than memory-bandwidth bound (restricted by the volume of data moved per second).
+* The Clock Test Behavior: Because it uses only a tiny fraction of the memory bus capacity, lowering the VRAM memory clock will have virtually zero impact on execution time, immediately exposing that the issue is data structure layout rather than throughput.
 
 ---
 
