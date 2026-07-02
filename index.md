@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[Memory Bandwidth Bound](#memorybandwidthbound)   
 [Memory Pointer Chasing](#chasing)   
 [Quantization](#quantization)   
 [Memory Mapping](#mmap)   
@@ -64,6 +65,13 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name='memorybandwidthbound'><a> Memory Bandwidth Bound
+
+* Calculate operational intensity (OI) of your model layers. flops / memory access. Compare with hardware roofline (peak flops / peak memory bandwidth). If your layer's OI is less than your hardware's capability, then your kernel is not computing enough for a given byte, hence it is memory-bound. The faster the memory transfer will get, the faster the overall throughput will be.
+* The Memory Clock Test: Lower the GPU memory clock (-lmc) while keeping the core clock high; if performance degrades linearly with the drop in memory frequency, the workload is strictly memory-bandwidth bound (unlike latency-bound pointer chasing, which won't change at all).
 
 ---
 
