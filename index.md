@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+[Contextual Bandits](#bandits)   
 [Memory Bandwidth Bound](#memorybandwidthbound)   
 [Memory Pointer Chasing](#chasing)   
 [Quantization](#quantization)   
@@ -65,6 +66,14 @@ layout: default
 [GRPO](#grpo)    
 [GPU Comms](#gpucomms)    
 [Async SGD, Hogwild](#asyncsgd)    
+
+---
+
+## <a name='bandits'><a> Contextual Bandits
+
+* Why bandits, not more data: If you just train on existing data, then you will serve what exists already. You cannot capture variance in user interests. The fix is changing what you show (deliberate exploration), not training harder on existing data. The genuine hole is counterfactual: you never observe outcomes for items the current system didn't surface.
+* What a contextual bandit is: A partial-feedback learner — it sees a context, picks one action, and observes a reward only for that action. It balances exploitation (show the model's current best) against exploration (try items it's uncertain about) via ε-greedy, UCB/LinUCB, or Thompson sampling. Training loop: score candidates → apply exploration rule → log context, action, reward, and propensity → periodically retrain, using inverse-propensity/doubly-robust corrections so the model's own biased logs don't just amplify its current preferences.
+* Where relevance actually comes from: Not exploration — that's noise on its own and costs clicks short-term. Relevance comes from the reward model being contextual: it learns (user features, item features) → click probability and generalizes across the catalog through features. That's your day-one win, and it's a supervised artifact buildable from logs you already have. Exploration's job is to keep that win from calcifying — it surfaces under-observed items so the model can correct itself, and it concentrates naturally on cold-start users and items where the model is weakest.
 
 ---
 
